@@ -85,8 +85,8 @@ if __name__ == '__main__':
 	app.run( 
 		debug=True, 
 		port=8100, 
-		ssl_context=('./Users/amandagilmore/GoogleFit/server.crt', 
-			'./Users/amandagilmore/GoogleFit/server.key'))
+		ssl_context=('/Users/amandagilmore/GoogleFit/server.crt', 
+			'/Users/amandagilmore/GoogleFit/server.key'))
 
 
 
