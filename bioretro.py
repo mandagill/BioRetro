@@ -34,8 +34,8 @@ def get_token():
 def data_stub():
 
 	some_data = foa.fetch_data()
+	print some_data.content
 	return some_data.content
-
 
 
 if __name__ == '__main__': 
