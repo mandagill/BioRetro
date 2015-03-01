@@ -1,13 +1,10 @@
-"""TODO integrate SQLAlchemy, implement data model and seed the DB with 2014 data"""
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 
-
-ENGINE = create_engine('postgresql://localhost:5432/BioRetro', echo=True)
-Session = scoped_session(sessionmaker(bind=ENGINE, autocommit=False, autoflush=False))
+ENGINE = None
+Session = None
 
 Base = declarative_base()
 # Base.query = session.query_property()
@@ -18,10 +15,11 @@ def make_tables():
 
 class HRDataPoint(Base):
 
-	__tablename__ = "HRDataPoint"
+	__tablename__ = "HRDataPoints"
 
 	id = Column(Integer, primary_key = True)
-	user_id = Column(Integer, ForeignKey("User.id"), nullable = False)
+	user_id = Column(Integer, ForeignKey("Users.id"), nullable = False)
+	bpm = Column(Integer, nullable = False)
 	start_time = Column(String, nullable = False)
 	end_time = Column(String, nullable = False)
 	start_datetime = Column(DateTime)
@@ -31,14 +29,15 @@ class HRDataPoint(Base):
 
 	def __repr__(self):
 		
-		return """I am a test object. My maker put me in the DB to better
-		understand how to use SQLAlchemy and PostgreSQL together.
-		I really don't do anything."""
+		return """I am a data point. TODO make a for realsies __repr__ method."""
+
+		# """<User id: %r, bpm: %r, start_time: %r,
+		#  end_time: %r, start_datetime: %r, end_datetime: %r>""" % self.id, self.bpm, self.start_time, self.end_time, self.start_datetime, self.end_datetime
 
 
 class User(Base):
 
-	__tablename__ = "User"
+	__tablename__ = "Users"
 
 	id = Column(Integer, primary_key=True)
 	email = Column(String, nullable = False)
@@ -48,11 +47,14 @@ class User(Base):
 
 
 def connect():
-	pass #will need this after seeding the DB
-	# global ENGINE
-	# global Session
+
+	global ENGINE
+	global Session
 	
-	# return Session()
+	ENGINE = create_engine('postgresql://localhost:5432/BioRetro', echo=True)
+	Session = sessionmaker(bind=ENGINE, autocommit=False, autoflush=False)
+
+	return Session()
 
 
 def main():
@@ -62,7 +64,5 @@ def main():
 
 if __name__ == '__main__': 
 	main()
-
-make_tables()
 
 

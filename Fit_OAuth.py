@@ -52,7 +52,7 @@ def callback(authcode):
 	return render_template('okauth.html')
 
 
-def fetch_data():
+def fetch_data(startbound, endbound, data_type):
 	"""Getting distance data, currently hardcoded. This will eventually take nanotime start and end parameters, 
 	and a datatype parameter so this function knows which API endpoint to call."""
 
