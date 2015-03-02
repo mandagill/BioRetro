@@ -22,8 +22,8 @@ class HRDataPoint(Base):
 	bpm = Column(Integer, nullable = False)
 	start_time = Column(String, nullable = False)
 	end_time = Column(String, nullable = False)
-	start_datetime = Column(DateTime)
-	end_datetime = Column(DateTime)
+	start_datetime = Column(DateTime, nullable = True)
+	end_datetime = Column(DateTime nullable = True)
 
 	user = relationship("User", backref = backref("data_point", order_by=start_time) )
 
@@ -39,8 +39,8 @@ class User(Base):
 
 	__tablename__ = "Users"
 
-	id = Column(Integer, primary_key=True)
-	email = Column(String, nullable = False)
+	id = Column(Integer, primary_key = True)
+	email = Column(String, nullable = True)
 
 	def __repr__(self):
 		return "<User email: %s>" % self.email

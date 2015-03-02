@@ -7,6 +7,7 @@ import json
 import model
 import nanotime
 from datetime import datetime
+import psycopg2
 
 
 def main():
@@ -16,7 +17,6 @@ def main():
 	hr_json = open('./raw_data/hr_manual.txt').read()
 
 	data = json.loads(hr_json)
-	datapoint = model.HRDataPoint()
 
 	""" 'each' is a dictionary. 'each' will become a single DB record; this loop 
 		parses the json and assigns its values to the datapoint object, then adds it to the SQL 
@@ -26,15 +26,17 @@ def main():
 	# see the most recent data point in the table. Investigate on Monday.
 
 	for each in data['point']:
-		print type(each)
+		
+		datapoint = model.HRDataPoint()
 		datapoint.user_id = 1 # Need to hardcode this to my user_id to satisfy FK constraint
 		datapoint.bpm = each['value'][0]['fpVal'] #This is a float
+		print datapoint.bpm
 		datapoint.start_time = each['startTimeNanos']
 		datapoint.end_time = each['endTimeNanos']
 
 		session.add(datapoint)
-
-		session.commit()
+	
+	session.commit()
 
 
 if __name__ == '__main__': 
