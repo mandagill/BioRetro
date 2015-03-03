@@ -81,7 +81,7 @@ def fetch_data(startbound, endbound, data_type):
 	api_call = QUERY_BASE_URI + source + '/datasets' + '/' + startbound + '-' + endbound
 	api_response = google.get(api_call)
 
-	print "From google: ----------", api_response.content
+	print "From google: ----------", api_response
 	if api_response.status_code == 200:
 		return api_response.content
 	elif api_response.status_code == 403:
