@@ -23,7 +23,7 @@ class HRDataPoint(Base):
 	start_time = Column(String, nullable = False)
 	end_time = Column(String, nullable = False)
 	start_datetime = Column(DateTime, nullable = True)
-	end_datetime = Column(DateTime nullable = True)
+	end_datetime = Column(DateTime, nullable = True)
 
 	user = relationship("User", backref = backref("data_point", order_by=start_time) )
 

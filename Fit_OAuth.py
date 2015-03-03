@@ -1,5 +1,6 @@
-""" This will contain the OAuth code"""
-# import bioretro? Not sure if I need the FLask stuff in here
+""" This contains code to authorize the Google Fit API with OAuth, create a session, 
+and retrieve protected data with the resulting session token."""
+
 from requests_oauthlib import OAuth2Session
 from flask import Flask, request, redirect, session, url_for, render_template
 from flask.json import jsonify
@@ -19,6 +20,13 @@ SCOPE = [
 	'https://www.googleapis.com/auth/fitness.body.read',
 	'https://www.googleapis.com/auth/fitness.location.read'
 ]
+
+# These are the required parameters to call the Google Fit API. The base URL is 
+# self-explanatory, and the foo_DATA constants are data stream IDs from which
+# we can fetch data.
+QUERY_BASE_URI = 'https://www.googleapis.com/fitness/v1/users/me/dataSources'
+SPEED_DATA = '/derived:com.google.speed:com.google.android.gms:merge_speed'
+BPM_DATA = '/derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm'
 
 
 def go_to_google():
@@ -51,18 +59,32 @@ def callback(authcode):
 
 	return render_template('okauth.html')
 
-
+# startbound, endbound, data_type
 def fetch_data(startbound, endbound, data_type):
-	"""Getting distance data, currently hardcoded. This will eventually take nanotime start and end parameters, 
-	and a datatype parameter so this function knows which API endpoint to call."""
+	"""Take a parameter from the caller as to what kind of data is desired,
+	and start/end time parameters (in nanoseconds, since the Google API was clearly 
+	written by Java programmers) for the desired dataset.
 
+	pass string 'speed' for speed data.
+	pass string 'bpm' for bpm data. """
+	
+	# Create an OAuth2 session with the token stored in the Flask session:
 	google = OAuth2Session(FIT_CLIENT_ID, token=session['oauth_token'])
+	
+	# Checks what the desired datatype is:
+	if data_type == 'bpm':
+		source = BPM_DATA
+	elif data_type == 'speed':
+		source = SPEED_DATA
 
-	speed_as_json = google.get("""https://www.googleapis.com/fitness/v1/users/me/dataSources/derived:com.google.speed:com.google.android.gms:merge_speed/datasets/1424839324587000000-1424840224587000000""")
+	# Use the caller-supplied parameters to build the HTTP request.
+	api_call = QUERY_BASE_URI + source + '/datasets' + '/' + startbound + '-' + endbound
+	api_response = google.get(api_call)
 
-	if speed_as_json.status_code == 200:
-		return speed_as_json
-	elif speed_as_json.status_code == 403:
+	print "From google: ----------", api_response.content
+	if api_response.status_code == 200:
+		return api_response.content
+	elif api_response.status_code == 403:
 		return "This app hasn't been authorized to access your location or body sensor data." 
 	else:
 		return "There was a problem getting your data from Google. Please check your debug logs."

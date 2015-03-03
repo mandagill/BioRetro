@@ -4,6 +4,7 @@ from requests_oauthlib import OAuth2Session
 from flask import Flask, request, redirect, session, url_for, render_template
 from flask.json import jsonify
 import os
+import data_filter as data_filter
 
 
 os.environ['DEBUG'] = '1'
@@ -33,9 +34,13 @@ def get_token():
 @app.route('/fetch_data')
 def data_stub():
 
-	some_data = foa.fetch_data()
-	print some_data.content
-	return some_data.content
+	result = data_filter.check_for_new_bpm()
+
+	if result is None:
+		return
+
+	print "Data updated!"
+	return "Your data has been updated!" #TODO edit the .js to show this to the userself.
 
 
 if __name__ == '__main__': 
