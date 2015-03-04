@@ -1,9 +1,9 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 
-ENGINE = None
+ENGINE = create_engine('postgresql://localhost:5432/BioRetro', echo=True)
 Session = None
 
 Base = declarative_base()
@@ -24,6 +24,8 @@ class HRDataPoint(Base):
 	end_time = Column(String, nullable = False)
 	start_datetime = Column(DateTime, nullable = True)
 	end_datetime = Column(DateTime, nullable = True)
+	day_id = Column(Integer, ForeignKey("Days.id"), nullable = False)
+	is_stressful = Column(Boolean, nullable = False)
 
 	user = relationship("User", backref = backref("data_point", order_by=start_time) )
 
@@ -46,6 +48,20 @@ class User(Base):
 		return "<User email: %s>" % self.email
 
 
+class Day(Base):
+
+	__tablename__ = "Days"
+
+	id = Column(Integer, primary_key = True)
+	date = Column(String, nullable = False)
+	is_stressful = Column(Boolean, nullable = False)
+
+	datapoints = relationship("HRDataPoint", backref("day"))
+
+	def __repr__(self):
+		return "<Day object %s, Stressful is %r>" % self.date, self.is_stressful
+
+
 def connect():
 
 	global ENGINE
@@ -65,4 +81,5 @@ def main():
 if __name__ == '__main__': 
 	main()
 
+make_tables()
 

@@ -5,6 +5,7 @@ import model
 import nanotime
 import numpy
 import data_point_store
+import json
 
 DAY_IN_NANOSECS = 86400000000000
 FIFTEEN_MINS_NANO = 900000000000
@@ -14,6 +15,9 @@ def check_for_new_bpm():
 	was for that user, and if the last pull was > 24 hours ago, it calls
 	fetch_data to add recent bpm data for that user. The user is currently
 	hardcoded to me."""
+
+	# TODO need to calculate and add day attribute to a datapoint 
+	# before adding to db. 
 
 	dbsession = model.connect()
 	latest_datapoint = dbsession.query(model.HRDataPoint).filter_by(user_id=1).order_by(model.HRDataPoint.start_time.desc()).first()
@@ -39,14 +43,17 @@ def is_motion_related(timestamp):
 
 	 It returns true or false."""
 
-	starttime = timestamp - FIFTEEN_MINS_NANO
+	starttime = str(int(timestamp) - FIFTEEN_MINS_NANO)
 	data_as_list = foa.fetch_data(startbound=starttime, endbound=timestamp, data_type='speed')
 
-	print data_as_list
+	d = json.loads(data_as_list)
 
-	
+	if 'point' not in d:
+		print "key 'point' not in the dict returned from fitness.location.read"
+		print "This is the thing we got back from Google: ", d
+		return False
 
-
+	return True
 
 
 def filter_bpm():
@@ -57,30 +64,39 @@ def filter_bpm():
 	Right now this is hardcoded to check *all* points in the HRDataPoint
 	table, but would in the future need to take the user id as a parameter."""
 
+	# TODO Need to also assign is_stressful values to datapoints, that info stored in HRDataPoints
+	# TODO Need to include a day ID with datapoints
+
 	dbsession = model.connect()
-	all_data_points = dbsession.query(model.HRDataPoint).filter_by(user_id=1).all()
+	data_points = dbsession.query(model.HRDataPoint).filter_by(user_id=1).all()
 
 	# Extract the bpm values so I can do math with them more easily:
 	list_of_bpm = []
 
-	for each_point in all_data_points:
+	for each_point in data_points:
 		list_of_bpm.append(each_point.bpm)
 
 	# Get the mean, and check which points are > 10 bpm of mean.
 	mean_of_dataset = numpy.mean(list_of_bpm)
+	# Create a counter for indexing purposes when deleting a data point
+	counter = 0
 
-	for each in all_data_points:
+	print "This is how many data points there are BEFORE: ", len(data_points)
+
+	for each in data_points:
+	# TEST THIS need to test with all the GF data; the test DB as it's 
+	# seeded now doesn't have any data points that are motion related. 
 		if each.bpm > (mean_of_dataset + 10):
-			# Call is_motion_related, passing it the starttime 
-			# attribute of the data point. If check returns true,
-			# remove it from the list of points. 
-			print "I am 10 or more higher than the mean."
+			if is_motion_related(each.start_time) is True:
+				data_points.remove(data_points[counter])
 
-	return list_of_bpm
+			counter += 1 
+
+	print "This is how many data points there are AFTER: ", len(data_points)
+	# Ultimately I'll return this to a view which will render it prettily for the user. 
+	return data_points 
 
 
-
-filter_bpm()
 
 
 

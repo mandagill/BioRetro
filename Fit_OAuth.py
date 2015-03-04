@@ -84,6 +84,8 @@ def fetch_data(startbound, endbound, data_type):
 	print "From google: ----------", api_response
 	if api_response.status_code == 200:
 		return api_response.content
+		# TODO function returns a string; would like to optimize
+		# this by making it return a dict to avoid repetition 
 	elif api_response.status_code == 403:
 		return "This app hasn't been authorized to access your location or body sensor data." 
 	else:

@@ -19,7 +19,15 @@ def save_to_db(data_as_string):
 		datapoint.bpm = each['value'][0]['fpVal'] #This is a float
 		datapoint.start_time = each['startTimeNanos']
 		datapoint.end_time = each['endTimeNanos']
+		# TODO Edit to also insert day and is_stressful info per new schema
 
 		session.add(datapoint)
 	
 	session.commit()
+
+
+def create_day(dataset):
+	"""This stores the state of stressful or not stressful to 
+	the database for a given day. Arranging the days 
+	in a week is done on the front end."""
+	pass
