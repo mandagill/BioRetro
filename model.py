@@ -53,7 +53,7 @@ def connect():
 	global ENGINE
 	global Session
 	
-	ENGINE = create_engine('postgresql://localhost:5432/BioRetro', echo=True)
+	ENGINE = create_engine('postgresql://localhost:5432/BioRetro', echo=False)
 	Session = sessionmaker(bind=ENGINE, autocommit=False, autoflush=False)
 
 	return Session()

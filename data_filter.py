@@ -1,7 +1,8 @@
 """TODO import a time library to make it easier to filter the data points based on working hours."""
 
 import Fit_OAuth as foa
-import model
+from model import connect, HRDataPoint
+from datetime import timedelta
 import nanotime
 import numpy
 import data_point_store
@@ -16,8 +17,8 @@ def check_for_new_bpm():
 	fetch_data to add recent bpm data for that user. The user is currently
 	hardcoded to me."""
 
-	dbsession = model.connect()
-	latest_datapoint = dbsession.query(model.HRDataPoint).filter_by(user_id=1).order_by(model.HRDataPoint.start_time.desc()).first()
+	dbsession = connect()
+	latest_datapoint = dbsession.query(HRDataPoint).filter_by(user_id=1).order_by(HRDataPoint.start_time.desc()).first()
 
 	latest_timestamp = int(latest_datapoint.end_time)
 
@@ -53,15 +54,25 @@ def is_motion_related(timestamp):
 	return True
 
 
-def is_stressful(a_datapoint):
-	"""This will take a datapoint object and determine if 
-	it is stressful by comparing to filtered datapoints from the preceeding week.
+def is_stressful(data_point_time):
+	"""This takes a datetime object as its parameter and determines if 
+	data associated with it indicates stress by comparing to filtered datapoints from the preceeding week.
 	The caller should expect a Boolean to be returned."""
 
-	
+	# Determine the startbound for the query:
+	d = timedelta(days=-7)
+	sb = data_point_time + d
 
+	dbsession = connect()
 
-	pass
+	dataset = dbsession.execute('Select * from "HRDataPoints" where start_datetime < :startbound and start_datetime > :endbound'
+	,{'endbound': data_point_time, 'startbound': sb})
+
+	# TODO use the info in dataset to determine if the datapoint indicates stress. 
+	# will likely refactor filter_bpm() while I'm at it to keep things DRY. 
+
+	print dataset
+	return 
 
 
 def filter_bpm():
@@ -73,8 +84,8 @@ def filter_bpm():
 	table, but would in the future need to take the user id as a parameter."""
 
 
-	dbsession = model.connect()
-	data_points = dbsession.query(model.HRDataPoint).filter_by(user_id=1).all()
+	dbsession = connect()
+	data_points = dbsession.query(HRDataPoint).filter_by(user_id=1).all()
 
 	# Extract the bpm values so I can do math with them more easily:
 	list_of_bpm = []
@@ -101,6 +112,11 @@ def filter_bpm():
 	print "This is how many data points there are AFTER: ", len(data_points)
 	# Ultimately I'll return this to a view which will render it prettily for the user. 
 	return data_points 
+
+s = connect()
+data_point = s.query(HRDataPoint).filter_by(user_id=1).order_by(HRDataPoint.start_time.desc()).first()
+print "start time of the starting test point: ", data_point.start_datetime
+is_stressful(data_point.start_datetime)
 
 
 
