@@ -34,7 +34,7 @@ def get_token():
 @app.route('/fetch_data')
 def data_stub():
 
-	result = data_filter.filter_bpm()
+	result = data_filter.check_for_new_bpm()
 
 	if result is None:
 		return

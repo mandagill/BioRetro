@@ -16,9 +16,6 @@ def check_for_new_bpm():
 	fetch_data to add recent bpm data for that user. The user is currently
 	hardcoded to me."""
 
-	# TODO need to calculate and add day attribute to a datapoint 
-	# before adding to db. 
-
 	dbsession = model.connect()
 	latest_datapoint = dbsession.query(model.HRDataPoint).filter_by(user_id=1).order_by(model.HRDataPoint.start_time.desc()).first()
 
@@ -56,6 +53,17 @@ def is_motion_related(timestamp):
 	return True
 
 
+def is_stressful(a_datapoint):
+	"""This will take a datapoint object and determine if 
+	it is stressful by comparing to filtered datapoints from the preceeding week.
+	The caller should expect a Boolean to be returned."""
+
+	
+
+
+	pass
+
+
 def filter_bpm():
 	"""This takes a list of HRDataPoint objects and filters out points
 	which aren't in the ambient heart rate zone. It does this by checking
@@ -64,8 +72,6 @@ def filter_bpm():
 	Right now this is hardcoded to check *all* points in the HRDataPoint
 	table, but would in the future need to take the user id as a parameter."""
 
-	# TODO Need to also assign is_stressful values to datapoints, that info stored in HRDataPoints
-	# TODO Need to include a day ID with datapoints
 
 	dbsession = model.connect()
 	data_points = dbsession.query(model.HRDataPoint).filter_by(user_id=1).all()

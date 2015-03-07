@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 
-ENGINE = create_engine('postgresql://localhost:5432/BioRetro', echo=True)
+ENGINE = None
 Session = None
 
 Base = declarative_base()
@@ -24,10 +24,10 @@ class HRDataPoint(Base):
 	end_time = Column(String, nullable = False)
 	start_datetime = Column(DateTime, nullable = True)
 	end_datetime = Column(DateTime, nullable = True)
-	day_id = Column(Integer, ForeignKey("Days.id"), nullable = False)
-	is_stressful = Column(Boolean, nullable = False)
+	day_of_point = Column(String, nullable = False)
+	# This needs to be nullable since this info needs to be calculated after the HR record is created.
+	is_stressful = Column(Boolean, nullable = True)
 
-	user = relationship("User", backref = backref("data_point", order_by=start_time) )
 
 	def __repr__(self):
 		
@@ -46,20 +46,6 @@ class User(Base):
 
 	def __repr__(self):
 		return "<User email: %s>" % self.email
-
-
-class Day(Base):
-
-	__tablename__ = "Days"
-
-	id = Column(Integer, primary_key = True)
-	date = Column(String, nullable = False)
-	is_stressful = Column(Boolean, nullable = False)
-
-	datapoints = relationship("HRDataPoint", backref("day"))
-
-	def __repr__(self):
-		return "<Day object %s, Stressful is %r>" % self.date, self.is_stressful
 
 
 def connect():
@@ -81,5 +67,4 @@ def main():
 if __name__ == '__main__': 
 	main()
 
-make_tables()
 
