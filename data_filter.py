@@ -171,7 +171,19 @@ def format_data_day():
 
 	This will take a string parameter formatted like this: '2015-24-02' """
 
-	pass
+	day = {
+	'9 am': False,
+	'10 am': False,
+	'11 am': False,
+	'noon': False,
+	'1 pm': False,
+	'2 pm': False,
+	'3 pm': False,
+	'4 pm': True,
+	'5 pm': False
+	}
+
+	return day
 
 
 

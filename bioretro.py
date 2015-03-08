@@ -64,8 +64,20 @@ def show_calendar():
 @app.route('/day/<day>')
 def show_day(day):
 
+	ORDERED_KEY_LIST_DAY = [
+		'9 am',
+		'10 am',
+		'11 am',
+		'noon',
+		'1 pm',
+		'2 pm',
+		'3 pm',
+		'4 pm',
+		'5 pm'
+	]
+
 	days_data = data_filter.format_data_day()
-	return render_template('day.html')
+	return render_template('day.html', keys=ORDERED_KEY_LIST_DAY, days_data=days_data)
 
 
 if __name__ == '__main__': 

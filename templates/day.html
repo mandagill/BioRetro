@@ -16,30 +16,13 @@
 <body>
 	<p>This will be a day view.</p>
 	<table class="table">
-		<tr>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-		</tr>
-		<tr>
-			<td></td>
-		</tr>
+		{% for each in keys %}
+			{% if days_data[each] %}
+				<tr><td class='warning'>{{ each }}</td></tr>
+			{% else %}
+				<tr><td class='success'>{{ each }}</td></tr>
+			{% endif %}
+		{% endfor %}
 	</table>
 </body>
 </html>
