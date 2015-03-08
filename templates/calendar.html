@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BioRetro</title>
+
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+<script src="./static/base.js"></script>
+
+<link rel="stylesheet" href="./static/style.css">
+</head>
+<body>
+	<p>This will have a calendar.</p>
+	<table class="table">
+		<tr>
+		{% for each in a_weeks_data %}
+			<td>{{ each }}</td>
+		{% endfor %}
+		</tr>
+		<tr class='day-clickable'>
+		{% for each in a_weeks_data %}
+			{% if a_weeks_data[each] %}
+				<td class='warning day-in-week'></td>
+			{% else %}
+				<td class='success day-in-week'></td>
+			{% endif %}
+		{% endfor %}
+		</tr>
+		
+	</table>
+</body>
+</html>

@@ -1,12 +1,14 @@
-"""TODO import a time library to make it easier to filter the data points based on working hours."""
+"""TODO import a time/calendar library to make it easier to filter the data points based on working hours."""
 
 import Fit_OAuth as foa
 from model import connect, HRDataPoint
+from sqlalchemy.sql import and_
 from datetime import timedelta
 import nanotime
 import numpy
 import data_point_store
 import json
+
 
 DAY_IN_NANOSECS = 86400000000000
 FIFTEEN_MINS_NANO = 900000000000
@@ -65,13 +67,16 @@ def is_stressful(data_point_time):
 
 	dbsession = connect()
 
-	dataset = dbsession.execute('Select * from "HRDataPoints" where start_datetime < :startbound and start_datetime > :endbound'
-	,{'endbound': data_point_time, 'startbound': sb})
+	dataset = dbsession.query(HRDataPoint).filter(and_(HRDataPoint.start_datetime > sb, HRDataPoint.start_datetime < data_point_time)).all()
 
 	# TODO use the info in dataset to determine if the datapoint indicates stress. 
 	# will likely refactor filter_bpm() while I'm at it to keep things DRY. 
 
-	print dataset
+	bpm_list = []
+	for each in dataset:
+		bpm_list.append(each.bpm)
+
+	print "this is the value of bpm_list: ", bpm_list
 	return 
 
 
@@ -113,10 +118,60 @@ def filter_bpm():
 	# Ultimately I'll return this to a view which will render it prettily for the user. 
 	return data_points 
 
-s = connect()
-data_point = s.query(HRDataPoint).filter_by(user_id=1).order_by(HRDataPoint.start_time.desc()).first()
-print "start time of the starting test point: ", data_point.start_datetime
-is_stressful(data_point.start_datetime)
+
+def determine_week():
+	"""check what the current week is and return the corret week number to display 
+	to the user. The function will just return a week number as an int to append to the URL.
+	The user should always see the preceeding week's data."""
+	pass
+
+
+def fetch_weeks_data():
+	"""Takes as parameter a week number (so 1 through 52) and returns a list of data 
+	point objects that ocurred in that week."""
+	# TODO make this dynamic, hardcoded to week 9 at the moment. 
+	
+	data_points = dbsession.query(HRDataPoint).filter(user_id=1).all()
+
+	pass
+
+
+def format_data_week(list_of_points):
+	"""Takes a list of data point objects as parameter, returns a dictionary formatted
+	like this: week = {'3-2': False, '3-3': False, '3-4': True}"""
+	
+	week_info = {}
+
+	for each in list_of_points:
+		k = each.day_of_point
+		
+		# If the day has already been flagged as True, keep iterating
+		if week_info[k] == True:
+			continue
+		# If not, check if the day is stressful and add to dict:
+		elif each.is_stressful == True:
+			week_info[k] = True
+		# Defaults to False if no other checks pass
+		else:
+			week_info[k] = False
+
+	week = {
+	'2015-02-03': True,
+	'2015-03-03': False,
+	'2015-04-03': False,
+	'2015-05-03': True,
+	'2015-06-03': False	
+}
+
+	return week
+
+
+def format_data_day():
+	"""Takes a single date as parameter and returns a list of data points for that day.
+
+	This will take a string parameter formatted like this: '2015-24-02' """
+
+	pass
 
 
 

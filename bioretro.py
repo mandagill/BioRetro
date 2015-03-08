@@ -42,6 +42,31 @@ def data_stub():
 	print "Data updated!"
 	return "Your data has been updated!" #TODO edit the .js to show this to the userself.
 
+# TODO figure out what will be calling this route.
+# i.e. what action should result in this calendar being shown?
+# /<int:num_week>
+
+
+# Ultimately this will take a URL parameter of the appropriate 
+# week to display data for so we can easily paginate.
+# It is currently hardcoded to wk 9 for testing purposes. 
+@app.route('/week')
+def show_calendar():
+	# TODO work out where determine_week gets called and how
+	# it gets passed to this function. 
+	# week_num = determine_week()
+	# list_of_weeks_data = fetch_weeks_data(9)
+	a_weeks_data = data_filter.format_data_week([])
+	return render_template('calendar.html', a_weeks_data = a_weeks_data)
+
+
+# TODO this should also take a URL param that is the date string
+@app.route('/day/<day>')
+def show_day(day):
+
+	days_data = data_filter.format_data_day()
+	return render_template('day.html')
+
 
 if __name__ == '__main__': 
 	app.run( 
