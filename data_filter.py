@@ -9,7 +9,6 @@ import numpy
 import data_point_store
 import json
 
-
 DAY_IN_NANOSECS = 86400000000000
 FIFTEEN_MINS_NANO = 900000000000
 
@@ -56,7 +55,7 @@ def is_motion_related(timestamp):
 	return True
 
 
-def is_stressful(data_point_time):
+def is_stressful(data_point_time, bpm):
 	"""This takes a datetime object as its parameter and determines if 
 	data associated with it indicates stress by comparing to filtered datapoints from the preceeding week.
 	The caller should expect a Boolean to be returned."""
@@ -69,15 +68,22 @@ def is_stressful(data_point_time):
 
 	dataset = dbsession.query(HRDataPoint).filter(and_(HRDataPoint.start_datetime > sb, HRDataPoint.start_datetime < data_point_time)).all()
 
-	# TODO use the info in dataset to determine if the datapoint indicates stress. 
-	# will likely refactor filter_bpm() while I'm at it to keep things DRY. 
-
 	bpm_list = []
 	for each in dataset:
 		bpm_list.append(each.bpm)
 
 	print "this is the value of bpm_list: ", bpm_list
-	return 
+
+	mean_of_dataset = numpy.mean(bpm_list)
+
+	print "the mean of the dataset is ", mean_of_dataset
+
+	if bpm > (mean_of_dataset + 9):
+		print True
+		return True
+
+	print False
+	return False
 
 
 def filter_bpm():
@@ -117,13 +123,6 @@ def filter_bpm():
 	print "This is how many data points there are AFTER: ", len(data_points)
 	# Ultimately I'll return this to a view which will render it prettily for the user. 
 	return data_points 
-
-
-def determine_week():
-	"""check what the current week is and return the corret week number to display 
-	to the user. The function will just return a week number as an int to append to the URL.
-	The user should always see the preceeding week's data."""
-	pass
 
 
 def fetch_weeks_data():

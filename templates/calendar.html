@@ -11,9 +11,9 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
-<script src="./static/base.js"></script>
+<script src="../static/base.js"></script>
 
-<link rel="stylesheet" href="./static/style.css">
+<link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
 	<p>This will have a calendar.</p>
@@ -32,7 +32,11 @@
 			{% endif %}
 		{% endfor %}
 		</tr>
-		
+		<br>
+		<div class='navlink'>
+			<a href='/next'>Next</a>
+			<a href='/previous'>Previous</a>
+		</div>
 	</table>
 </body>
 </html>

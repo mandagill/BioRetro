@@ -2,6 +2,7 @@ import json
 import model
 from datetime import datetime
 import psycopg2
+import data_filter
 
 
 def save_to_db(data_as_string):
@@ -30,12 +31,15 @@ def save_to_db(data_as_string):
 		dt = convert_to_datetime(datapoint.start_time)
 		datapoint.day_of_point = dt.strftime('%Y-%m-%d')
 
-		datapoint.is_stressful = is_stressful()
+		datapoint.is_stressful = data_filter.is_stressful(datapoint.start_datetime, datapoint.bpm)
 
 		# Add the datapoint to the db session
 		dbsession.add(datapoint)
-	
-	dbsession.commit()
+		# Putting the commit *inside* the loop so that the
+		# is_stressful function can use the committed datapoints
+		# when it calls the db. Not as performant but it
+		# makes the calculations more accurate.
+		dbsession.commit()
 
 
 def convert_to_datetime(nanotime_as_string):

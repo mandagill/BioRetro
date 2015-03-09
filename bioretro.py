@@ -5,6 +5,7 @@ from flask import Flask, request, redirect, session, url_for, render_template
 from flask.json import jsonify
 import os
 import data_filter as data_filter
+from isoweek import Week
 
 
 os.environ['DEBUG'] = '1'
@@ -42,25 +43,33 @@ def data_stub():
 	print "Data updated!"
 	return "Your data has been updated!" #TODO edit the .js to show this to the userself.
 
-# TODO figure out what will be calling this route.
-# i.e. what action should result in this calendar being shown?
-# /<int:num_week>
+
+@app.route('/check_week_number')
+def get_week_number():
+	"""Check what the current week is and return the corret week number to display 
+	to the user. The function will just return a week number as a string to append to 
+	the next route the user will be directed to."""
+
+	this_week = str(Week.thisweek())
+	week_num_str = this_week[-2:]
+	week_num_int = int(week_num_str)
+	week_num = str(week_num_int - 1)
+
+	return week_num
 
 
 # Ultimately this will take a URL parameter of the appropriate 
 # week to display data for so we can easily paginate.
 # It is currently hardcoded to wk 9 for testing purposes. 
-@app.route('/week')
-def show_calendar():
-	# TODO work out where determine_week gets called and how
-	# it gets passed to this function. 
+@app.route('/week/<week_num>')
+def show_calendar(week_num):
+
 	# week_num = determine_week()
 	# list_of_weeks_data = fetch_weeks_data(9)
 	a_weeks_data = data_filter.format_data_week([])
 	return render_template('calendar.html', a_weeks_data = a_weeks_data)
 
 
-# TODO this should also take a URL param that is the date string
 @app.route('/day/<day>')
 def show_day(day):
 
