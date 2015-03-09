@@ -31,6 +31,11 @@ def save_to_db(data_as_string):
 		dt = convert_to_datetime(datapoint.start_time)
 		datapoint.day_of_point = dt.strftime('%Y-%m-%d')
 
+
+		# TODO write the true/false flag for is_stressful to DB
+
+
+
 		datapoint.is_stressful = data_filter.is_stressful(datapoint.start_datetime, datapoint.bpm)
 
 		# Add the datapoint to the db session
