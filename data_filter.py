@@ -4,7 +4,6 @@ import Fit_OAuth as foa
 from model import connect, HRDataPoint
 from sqlalchemy.sql import and_
 from datetime import timedelta
-import nanotime
 import numpy
 import data_point_store
 import json
@@ -162,25 +161,26 @@ def format_data_week(list_of_points):
 	week_info = {}
 
 	for each in list_of_points:
-		print each.start_datetime
+		# Get the date as a string to use as key to the dictionary to return
 		k = each.day_of_point
 
+		# Checking if the key is in the dict first, and if not, add it:
 		if k not in week_info:
 			if each.is_stressful == True:
 				week_info[k] = True
 			else:
 				week_info[k] = False
-
+		# If it's in the dict, update the record.
 		if each.is_stressful is True:
 			week_info[k] = True
+		# If the current point is False but there is already a True
+		# point in the dict, check so as not to override.
+		elif week_info.get(k) is True:
+			continue
 		else:
 			week_info[k] = False
 
 		print week_info
-
-		# so if the day is already in the dict, and the new point is stressful, update the dict
-		# if each.is_stressful is True
-		# 	week_info[k] = True
 
 	# keys = week_info.getkeys()
 
