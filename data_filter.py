@@ -8,6 +8,7 @@ import nanotime
 import numpy
 import data_point_store
 import json
+from isoweek import Week
 
 DAY_IN_NANOSECS = 86400000000000
 FIFTEEN_MINS_NANO = 900000000000
@@ -125,64 +126,79 @@ def filter_bpm():
 	return data_points 
 
 
-def fetch_weeks_data():
+def fetch_weeks_data(week_number):
 	"""Takes as parameter a week number (so 1 through 52) and returns a list of data 
-	point objects that ocurred in that week."""
-	# TODO make this dynamic, hardcoded to week 9 at the moment. 
-	
-	data_points = dbsession.query(HRDataPoint).filter(user_id=1).all()
+	point objects that ocurred in that week. It currently assumes the year is 2015; this will
+	need to be refactored in later iterations.""" 
+	dbsession = connect()
 
-	pass
+	# FIXME This isn't pulling all of the expected data.
+
+	# Convert week number to a datetime oject for DB querying, multiline for readability
+	requested_week = Week(2015, week_number)
+
+	startbound = requested_week.monday()
+	endbound = requested_week.friday()
+
+	one_weeks_data = dbsession.query(HRDataPoint).filter(HRDataPoint.start_datetime>startbound, HRDataPoint.start_datetime<endbound ).all()
+
+	# Need to unpack the data points contained in the query result object because SQLAlchemy = teh suck
+	datapoints = []
+
+	for each in one_weeks_data:
+		datapoints.append(each)
+
+	return datapoints
 
 
 def format_data_week(list_of_points):
 	"""Takes a list of data point objects as parameter, returns a dictionary formatted
-	like this: week = {'3-2': False, '3-3': False, '3-4': True}"""
-	
+	like this: week = {'3-2': False, '3-3': False, '3-4': True}
+
+	It also returns a list of keys sorted chronologically so the view can 
+	present the data in a week calendar format."""
+	# FIX ME FIX ME FIX MEEEEE Dictionaries aren't sorted so the view currently
+	# shows the user data out of order. gotta fix this.
 	week_info = {}
 
 	for each in list_of_points:
+		print each.start_datetime
 		k = each.day_of_point
-		
-		# If the day has already been flagged as True, keep iterating
-		if week_info[k] == True:
-			continue
-		# If not, check if the day is stressful and add to dict:
-		elif each.is_stressful == True:
+
+		if k not in week_info:
+			if each.is_stressful == True:
+				week_info[k] = True
+			else:
+				week_info[k] = False
+
+		if each.is_stressful is True:
 			week_info[k] = True
-		# Defaults to False if no other checks pass
 		else:
 			week_info[k] = False
 
-	week = {
-	'2015-02-03': True,
-	'2015-03-03': False,
-	'2015-04-03': False,
-	'2015-05-03': True,
-	'2015-06-03': False	
-}
+		print week_info
 
-	return week
+		# so if the day is already in the dict, and the new point is stressful, update the dict
+		# if each.is_stressful is True
+		# 	week_info[k] = True
+
+	# keys = week_info.getkeys()
+
+	return week_info
 
 
-def format_data_day():
+def format_data_day(day_string):
 	"""Takes a single date as parameter and returns a list of data points for that day.
-
 	This will take a string parameter formatted like this: '2015-24-02' """
 
-	day = {
-	'9 am': False,
-	'10 am': False,
-	'11 am': False,
-	'noon': False,
-	'1 pm': False,
-	'2 pm': False,
-	'3 pm': False,
-	'4 pm': True,
-	'5 pm': False
-	}
+	dbsession = connect()
+	result = dbsession.query(HRDataPoint).filter_by(day_of_point=day_string).all()
+	day_data = []
 
-	return day
+	for each in result:
+		day_data.append(each)
+
+	return day_data
 
 
 

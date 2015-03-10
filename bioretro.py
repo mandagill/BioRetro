@@ -41,7 +41,7 @@ def data_stub():
 		return
 
 	print "Data updated!"
-	return "Your data has been updated!" #TODO edit the .js to show this to the userself.
+	return "Your data has been updated!" #TODO edit the .js to show this to the user.
 
 
 @app.route('/check_week_number')
@@ -49,7 +49,7 @@ def get_week_number():
 	"""Check what the current week is and return the corret week number to display 
 	to the user. The function will just return a week number as a string to append to 
 	the next route the user will be directed to."""
-
+	# TODO refactor this to support multi-year data; program currently assumes the year is 2015.
 	this_week = str(Week.thisweek())
 	week_num_str = this_week[-2:]
 	week_num_int = int(week_num_str)
@@ -58,16 +58,13 @@ def get_week_number():
 	return week_num
 
 
-# Ultimately this will take a URL parameter of the appropriate 
-# week to display data for so we can easily paginate.
-# It is currently hardcoded to wk 9 for testing purposes. 
 @app.route('/week/<week_num>')
 def show_calendar(week_num):
 
-	# week_num = determine_week()
-	# list_of_weeks_data = fetch_weeks_data(9)
-	a_weeks_data = data_filter.format_data_week([])
-	return render_template('calendar.html', a_weeks_data = a_weeks_data)
+	list_of_data = data_filter.fetch_weeks_data(int(week_num))
+	# This returns a 5 item dict with bool values on each day 
+	one_weeks_data = data_filter.format_data_week(list_of_data)
+	return render_template('calendar.html', a_weeks_data = one_weeks_data)
 
 
 @app.route('/day/<day>')
@@ -85,7 +82,7 @@ def show_day(day):
 		'5 pm'
 	]
 
-	days_data = data_filter.format_data_day()
+	days_data = data_filter.format_data_day(day)
 	return render_template('day.html', keys=ORDERED_KEY_LIST_DAY, days_data=days_data)
 
 

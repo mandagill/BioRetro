@@ -28,13 +28,9 @@ class HRDataPoint(Base):
 	# This needs to be nullable since this info needs to be calculated after the HR record is created.
 	is_stressful = Column(Boolean, nullable = True)
 
-
 	def __repr__(self):
 		
-		return """I am a data point. TODO make a for realsies __repr__ method."""
-
-		# """<User id: %r, bpm: %r, start_time: %r,
-		#  end_time: %r, start_datetime: %r, end_datetime: %r>""" % self.id, self.bpm, self.start_time, self.end_time, self.start_datetime, self.end_datetime
+		return "<BPM: %r, date: %r>" % (self.bpm, self.day_of_point)
 
 
 class User(Base):
