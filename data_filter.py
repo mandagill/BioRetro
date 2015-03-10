@@ -131,13 +131,11 @@ def fetch_weeks_data(week_number):
 	need to be refactored in later iterations.""" 
 	dbsession = connect()
 
-	# FIXME This isn't pulling all of the expected data.
-
-	# Convert week number to a datetime oject for DB querying, multiline for readability
 	requested_week = Week(2015, week_number)
-
+	# These functions return datetime objects. I <3 the isoweek library zomg.
 	startbound = requested_week.monday()
-	endbound = requested_week.friday()
+	endbound = requested_week.saturday() #This doesn't *include* data from the endbound day, just up to that day.
+	print endbound
 
 	one_weeks_data = dbsession.query(HRDataPoint).filter(HRDataPoint.start_datetime>startbound, HRDataPoint.start_datetime<endbound ).all()
 
@@ -157,7 +155,7 @@ def format_data_week(list_of_points):
 	It also returns a list of keys sorted chronologically so the view can 
 	present the data in a week calendar format."""
 	# FIX ME FIX ME FIX MEEEEE Dictionaries aren't sorted so the view currently
-	# shows the user data out of order. gotta fix this.
+	# shows the user data out of order. Tracked in issue #5
 	week_info = {}
 
 	for each in list_of_points:
@@ -194,9 +192,12 @@ def format_data_day(day_string):
 	dbsession = connect()
 	result = dbsession.query(HRDataPoint).filter_by(day_of_point=day_string).all()
 	day_data = []
-
+	# Need to unpack the data queried from the DB before checking for stress
 	for each in result:
+		print "current datapoint, is_stressful is: ", each.is_stressful
 		day_data.append(each)
+
+	# TODO build a dictionary with times as keys and Booleans for values.
 
 	return day_data
 
