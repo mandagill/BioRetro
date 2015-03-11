@@ -17,10 +17,12 @@
 	<p>This will be a day view.</p>
 	<table class="table">
 		{% for each in keys %}
-			{% if days_data[each] %}
+			{% if days_data[each] == True %}
 				<tr><td class='warning'>{{ each }}</td></tr>
-			{% else %}
+			{% elif days_data[each] == False %}
 				<tr><td class='success'>{{ each }}</td></tr>
+			{% else %}
+				<tr><td class='info'>{{ each }}</td>
 			{% endif %}
 		{% endfor %}
 	</table>

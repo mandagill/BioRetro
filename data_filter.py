@@ -1,7 +1,7 @@
 import Fit_OAuth as foa
 from model import connect, HRDataPoint
 from sqlalchemy.sql import and_, asc
-from datetime import timedelta
+from datetime import timedelta, time, datetime
 import nanotime
 import numpy
 import data_point_store
@@ -159,17 +159,54 @@ def format_data_day(day_string):
 
 	dbsession = connect()
 	result = dbsession.query(HRDataPoint).filter_by(day_of_point=day_string).all()
-	day_data = []
 	# Need to unpack the data queried from the DB before checking for stress
-	for each in result:
+	day_data = []
 
-		# if each.start_datetime  
-		print "current datapoint, is_stressful is: ", each.is_stressful
-		day_data.append(each)
+	for each_record in result:
+		day_data.append(each_record)
 
-	# TODO build a dictionary with times as keys and Booleans for values.
+	# Need to extract the time from the datetime attribute, 
+	# so make a dict of {<time> : <boolean>} pairs:
+	dict_day_booleans = {}
 
-	return day_data
+	for each_point in day_data:
+		# print each_point
+		dt = each_point.start_datetime
+		hour_of_point = dt.hour
+		print hour_of_point
+		dict_day_booleans[hour_of_point] = each_point.is_stressful
+	print "This is dict_day_booleans:", dict_day_booleans
+
+	# Reference the dict indexed by time and create a timestring/bool dict to return:
+	to_display = {}
+	dict_keys = dict_day_booleans.keys()
+
+	for a_key in dict_keys:
+		if a_key < 10:
+			to_display['9 am'] = dict_day_booleans.get(a_key)
+		elif a_key < 11:
+			to_display['10 am'] = dict_day_booleans.get(a_key)
+		elif a_key < 12:
+			to_display['11 am'] = dict_day_booleans.get(a_key)
+		elif a_key < 13:
+			to_display['noon'] = dict_day_booleans.get(a_key)
+		elif a_key < 14:
+			to_display['1 pm'] = dict_day_booleans.get(a_key)
+		elif a_key < 15:
+			to_display['2 pm'] = dict_day_booleans.get(a_key)
+		elif a_key < 16:
+			to_display['3 pm'] = dict_day_booleans.get(a_key)
+		elif a_key < 17:
+			to_display['4 pm'] = dict_day_booleans.get(a_key)
+		elif a_key < 18:
+			to_display['5 pm'] = dict_day_booleans.get(a_key)
+		elif a_key < 19:
+			to_display['6 pm'] = dict_day_booleans.get(a_key)
+		else:
+			pass
+
+	return to_display
+
 
 
 

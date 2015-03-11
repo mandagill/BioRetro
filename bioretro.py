@@ -79,7 +79,8 @@ def show_day(day):
 		'2 pm',
 		'3 pm',
 		'4 pm',
-		'5 pm'
+		'5 pm',
+		'6 pm'
 	]
 
 	days_data = data_filter.format_data_day(day)

@@ -6,7 +6,8 @@ import data_filter
 
 
 WORK_START = time(9, 0, 0)
-WORK_END = time(18, 30, 0)
+# Making end at 7 pm since I ususally work a little bit past 6; want to include those data points
+WORK_END = time(19, 0, 0)
 
 
 def save_to_db(data_as_string):
