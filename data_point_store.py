@@ -1,18 +1,18 @@
 import json
 import model
-from datetime import datetime
+from datetime import datetime, time
 import psycopg2
 import data_filter
+
+
+WORK_START = time(9, 0, 0)
+WORK_END = time(18, 30, 0)
 
 
 def save_to_db(data_as_string):
 	""" 'each' is a dictionary. 'each' will become a single DB record; this loop 
 		parses the json and assigns its values to the datapoint object, then adds it to the SQL 
-		session to commit at the end."""
-		 
-		 # TODO need a way of checking the DB if there is a 
-		 # day in there already and if not, to add the day w/ 
-		 # is_stress being null. 
+		session to commit at the end.""" 
 
 	data_dict = json.loads(data_as_string)
 	dbsession = model.connect()
@@ -20,23 +20,32 @@ def save_to_db(data_as_string):
 	for each in data_dict['point']:
 		# Create a datapoint oject
 		datapoint = model.HRDataPoint()
-		# Assign its attributes according to the dictionary contents
-		datapoint.user_id = 1 # Need to hardcode this to my user_id to satisfy FK constraint
+
+		# Assign its attributes according to the dictionary contents.
+		datapoint.user_id = 1 # Need to hardcode this to me until multiple users/logins are supported. 
 		datapoint.bpm = each['value'][0]['fpVal']
 		datapoint.start_time = each['startTimeNanos']
 		datapoint.end_time = each['endTimeNanos']
 		datapoint.start_datetime = convert_to_datetime(datapoint.start_time)
 		datapoint.end_datetime = convert_to_datetime(datapoint.end_time)
-		# Converting type over two lines for readability 
-		dt = convert_to_datetime(datapoint.start_time)
-		datapoint.day_of_point = dt.strftime('%Y-%m-%d')
 
+		sdt = convert_to_datetime(datapoint.start_time)
+		time_of_sdt = sdt.time()
 
-		# TODO write the true/false flag for is_stressful to DB
+		# Make sure the point is in working hours before writing it to the DB:
+		if not (time_of_sdt > WORK_START) & (time_of_sdt < WORK_END):
+			continue #I expect this to go to the next point in data_dict in line 16
 
-
-
+		datapoint.day_of_point = sdt.strftime('%Y-%m-%d')
+		
+		# Check if the datapoint is stressful when compared to existing DB data
 		datapoint.is_stressful = data_filter.is_stressful(datapoint.start_datetime, datapoint.bpm)
+		
+		# Make sure elevated bpm isn't motion related before writing it to the DB
+		if datapoint.is_stressful:
+			if data_filter.is_motion_related(datapoint.start_time):
+				print "the datapoint is stressful, using continue."
+				continue
 
 		# Add the datapoint to the db session
 		dbsession.add(datapoint)

@@ -1,9 +1,8 @@
-"""TODO import a time/calendar library to make it easier to filter the data points based on working hours."""
-
 import Fit_OAuth as foa
 from model import connect, HRDataPoint
-from sqlalchemy.sql import and_
+from sqlalchemy.sql import and_, asc
 from datetime import timedelta
+import nanotime
 import numpy
 import data_point_store
 import json
@@ -19,9 +18,14 @@ def check_for_new_bpm():
 	hardcoded to me."""
 
 	dbsession = connect()
-	latest_datapoint = dbsession.query(HRDataPoint).filter_by(user_id=1).order_by(HRDataPoint.start_time.desc()).first()
-
+	result = dbsession.execute('select * from "HRDataPoints" order by start_datetime desc limit 1')
+	# import pdb; pdb.set_trace()
+	
+	latest_datapoint = result.first()
 	latest_timestamp = int(latest_datapoint.end_time)
+	print "This is the start point for the API call: ", latest_datapoint.start_time, "which is ", latest_datapoint.start_datetime
+	now_in_nanotime = nanotime.now()
+	print "This is the endbound for the API call: ", now_in_nanotime
 
 	if latest_timestamp < (int(nanotime.now()) - DAY_IN_NANOSECS):
 		endbound = str(int(nanotime.now())) # Get now in nanotime for the endbound of the dataset
@@ -31,6 +35,8 @@ def check_for_new_bpm():
 	else:
 		print """No new data in the DB!
 		check back in 24 hours."""
+		# TODO return the string to the ajax caller so the user will
+		# see the message.
 		return False
 
 
@@ -86,45 +92,6 @@ def is_stressful(data_point_time, bpm):
 	return False
 
 
-def filter_bpm():
-	"""This takes a list of HRDataPoint objects and filters out points
-	which aren't in the ambient heart rate zone. It does this by checking
-	for motion data shortly before data points which are 10 bpm or higher than the mean.
-
-	Right now this is hardcoded to check *all* points in the HRDataPoint
-	table, but would in the future need to take the user id as a parameter."""
-
-
-	dbsession = connect()
-	data_points = dbsession.query(HRDataPoint).filter_by(user_id=1).all()
-
-	# Extract the bpm values so I can do math with them more easily:
-	list_of_bpm = []
-
-	for each_point in data_points:
-		list_of_bpm.append(each_point.bpm)
-
-	# Get the mean, and check which points are > 10 bpm of mean.
-	mean_of_dataset = numpy.mean(list_of_bpm)
-	# Create a counter for indexing purposes when deleting a data point
-	counter = 0
-
-	print "This is how many data points there are BEFORE: ", len(data_points)
-
-	for each in data_points:
-	# TEST THIS need to test with all the GF data; the test DB as it's 
-	# seeded now doesn't have any data points that are motion related. 
-		if each.bpm > (mean_of_dataset + 10):
-			if is_motion_related(each.start_time) is True:
-				data_points.remove(data_points[counter])
-
-			counter += 1 
-
-	print "This is how many data points there are AFTER: ", len(data_points)
-	# Ultimately I'll return this to a view which will render it prettily for the user. 
-	return data_points 
-
-
 def fetch_weeks_data(week_number):
 	"""Takes as parameter a week number (so 1 through 52) and returns a list of data 
 	point objects that ocurred in that week. It currently assumes the year is 2015; this will
@@ -139,7 +106,7 @@ def fetch_weeks_data(week_number):
 
 	one_weeks_data = dbsession.query(HRDataPoint).filter(HRDataPoint.start_datetime>startbound, HRDataPoint.start_datetime<endbound ).all()
 
-	# Need to unpack the data points contained in the query result object because SQLAlchemy = teh suck
+	# Need to unpack the data points contained in the query result object because SQLAlchemy is mildly annoying like that.
 	datapoints = []
 
 	for each in one_weeks_data:
@@ -186,7 +153,8 @@ def format_data_week(list_of_points):
 
 
 def format_data_day(day_string):
-	"""Takes a single date as parameter and returns a list of data points for that day.
+	"""Takes a single date as parameter and returns a dict of times during the 
+	day as keys and boolean values.
 	This will take a string parameter formatted like this: '2015-24-02' """
 
 	dbsession = connect()
@@ -194,6 +162,8 @@ def format_data_day(day_string):
 	day_data = []
 	# Need to unpack the data queried from the DB before checking for stress
 	for each in result:
+
+		# if each.start_datetime  
 		print "current datapoint, is_stressful is: ", each.is_stressful
 		day_data.append(each)
 
