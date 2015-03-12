@@ -10,7 +10,7 @@ function refreshData() {
 
 $('#get-moar-data').on('click', refreshData);
 
-// FIXME see 
+
 function getReport() {
 	$.get(
 		"/check_week_number",

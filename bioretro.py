@@ -1,4 +1,3 @@
-""""This will contain the Flask server and routes for the BioRetro"""
 import Fit_OAuth as foa
 from requests_oauthlib import OAuth2Session
 from flask import Flask, request, redirect, session, url_for, render_template
@@ -46,29 +45,50 @@ def data_stub():
 
 @app.route('/check_week_number')
 def get_week_number():
-	"""Check what the current week is and return the corret week number to display 
+	"""Check what the current week is and return the correct week number to display 
 	to the user. The function will just return a week number as a string to append to 
 	the next route the user will be directed to."""
 	# TODO refactor this to support multi-year data; program currently assumes the year is 2015.
 	this_week = str(Week.thisweek())
 	week_num_str = this_week[-2:]
 	week_num_int = int(week_num_str)
-	week_num = str(week_num_int - 1)
+	
+	# need to decrement so we see the last *full week's* data
+	week_num = week_num_int - 1
+	session['week_viewing'] = week_num
 
-	return week_num
+	print "here's the week num in session: ", session['week_viewing']
+
+	return str(week_num)
 
 
-@app.route('/week/<week_num>')
+@app.route('/week/<int:week_num>')
 def show_calendar(week_num):
 
-	# Retrieve data for the most recent full week and format it:
-	list_of_data = data_filter.fetch_weeks_data(int(week_num))
-	one_weeks_data = data_filter.format_data_week(list_of_data)
-
-	# Go get an ordered list of dates for the given week for sorting the data:
-	sort_keys = data_filter.generate_days_index(int(week_num))
+	sort_keys, one_weeks_data = data_filter.render_data(week_num)
 
 	return render_template('calendar.html', keys=sort_keys, a_weeks_data = one_weeks_data)
+
+
+@app.route('/older')
+def show_older():
+	"""Checks the session dictionary for the week that is currently being viewed and 
+	displays info for the previous week."""
+	# First we decrement the week_number in session:
+	session['week_viewing'] -= 1
+
+	requested_week = session['week_viewing']
+	sort_keys, one_weeks_data = data_filter.render_data(requested_week)
+
+	return render_template('calendar.html', keys=sort_keys, a_weeks_data = one_weeks_data)
+
+
+@app.route('/newer')
+def show_newer():
+	"""Checks the session dictionary for the week that is currently being viewed and 
+	displays info for the nex week after that."""
+	# TODO implement incrementation of week_viewing after lunch...
+	pass
 
 
 @app.route('/day/<day>')
@@ -89,6 +109,7 @@ def show_day(day):
 
 	days_data = data_filter.format_data_day(day)
 	return render_template('day.html', keys=ORDERED_KEY_LIST_DAY, days_data=days_data)
+
 
 
 if __name__ == '__main__': 

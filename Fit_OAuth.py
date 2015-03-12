@@ -59,7 +59,7 @@ def callback(authcode):
 
 	return render_template('okauth.html')
 
-# startbound, endbound, data_type
+
 def fetch_data(startbound, endbound, data_type):
 	"""Take a parameter from the caller as to what kind of data is desired,
 	and start/end time parameters (in nanoseconds, since the Google API was clearly 

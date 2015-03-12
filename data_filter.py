@@ -1,4 +1,4 @@
-# import Fit_OAuth as foa
+import Fit_OAuth as foa
 from model import connect, HRDataPoint
 from sqlalchemy.sql import and_, asc
 from datetime import timedelta, time, datetime
@@ -156,6 +156,21 @@ def generate_days_index(week_number):
 		days_index.append(str(each))
 
 	return days_index
+
+
+def render_data(week_number):
+	"""This is a wrapper function to prep the week data for the view. It will
+	return a dictionary of values and a list to order the data with when the
+	Jinja template is generated."""
+	# Retrieve data for the given week and format it:
+	list_of_data = fetch_weeks_data(int(week_number))
+	one_weeks_data = format_data_week(list_of_data)
+
+	# Go get an ordered list of dates for the given week for sorting the data:
+	sort_keys = generate_days_index(int(week_number))
+
+	return sort_keys, one_weeks_data
+
 
 
 def format_data_day(day_string):
