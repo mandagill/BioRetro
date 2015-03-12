@@ -19,16 +19,18 @@
 	<p>This will have a calendar.</p>
 	<table class="table">
 		<tr>
-		{% for each in a_weeks_data %}
+		{% for each in keys %}
 			<td>{{ each }}</td>
 		{% endfor %}
 		</tr>
 		<tr class='day-clickable'>
-		{% for each in a_weeks_data %}
-			{% if a_weeks_data[each] %}
+		{% for each in keys %}
+			{% if a_weeks_data[each] == True %}
 				<td class='warning day-in-week'></td>
-			{% else %}
+			{% elif a_weeks_data[each] == False %}
 				<td class='success day-in-week'></td>
+			{% else %}
+				<td class='info day-in-week'></td>
 			{% endif %}
 		{% endfor %}
 		</tr>

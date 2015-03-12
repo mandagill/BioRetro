@@ -1,4 +1,4 @@
-import Fit_OAuth as foa
+# import Fit_OAuth as foa
 from model import connect, HRDataPoint
 from sqlalchemy.sql import and_, asc
 from datetime import timedelta, time, datetime
@@ -19,13 +19,10 @@ def check_for_new_bpm():
 
 	dbsession = connect()
 	result = dbsession.execute('select * from "HRDataPoints" order by start_datetime desc limit 1')
-	# import pdb; pdb.set_trace()
 	
 	latest_datapoint = result.first()
 	latest_timestamp = int(latest_datapoint.end_time)
-	print "This is the start point for the API call: ", latest_datapoint.start_time, "which is ", latest_datapoint.start_datetime
 	now_in_nanotime = nanotime.now()
-	print "This is the endbound for the API call: ", now_in_nanotime
 
 	if latest_timestamp < (int(nanotime.now()) - DAY_IN_NANOSECS):
 		endbound = str(int(nanotime.now())) # Get now in nanotime for the endbound of the dataset
@@ -54,8 +51,6 @@ def is_motion_related(timestamp):
 	d = json.loads(data_as_list)
 
 	if 'point' not in d:
-		print "key 'point' not in the dict returned from fitness.location.read"
-		print "This is the thing we got back from Google: ", d
 		return False
 
 	return True
@@ -78,17 +73,11 @@ def is_stressful(data_point_time, bpm):
 	for each in dataset:
 		bpm_list.append(each.bpm)
 
-	print "this is the value of bpm_list: ", bpm_list
-
 	mean_of_dataset = numpy.mean(bpm_list)
 
-	print "the mean of the dataset is ", mean_of_dataset
-
 	if bpm > (mean_of_dataset + 9):
-		print True
 		return True
 
-	print False
 	return False
 
 
@@ -96,13 +85,13 @@ def fetch_weeks_data(week_number):
 	"""Takes as parameter a week number (so 1 through 52) and returns a list of data 
 	point objects that ocurred in that week. It currently assumes the year is 2015; this will
 	need to be refactored in later iterations.""" 
+
 	dbsession = connect()
 
 	requested_week = Week(2015, week_number)
 	# These functions return datetime objects. I <3 the isoweek library zomg.
 	startbound = requested_week.monday()
 	endbound = requested_week.saturday() #This doesn't *include* data from the endbound day, just up to that day.
-	print endbound
 
 	one_weeks_data = dbsession.query(HRDataPoint).filter(HRDataPoint.start_datetime>startbound, HRDataPoint.start_datetime<endbound ).all()
 
@@ -117,10 +106,7 @@ def fetch_weeks_data(week_number):
 
 def format_data_week(list_of_points):
 	"""Takes a list of data point objects as parameter, returns a dictionary formatted
-	like this: week = {'3-2': False, '3-3': False, '3-4': True}
-
-	It also returns a list of keys sorted chronologically so the view can 
-	present the data in a week calendar format."""
+	like this: week = {'3-2': False, '3-3': False, '3-4': True}"""
 	# FIX ME FIX ME FIX MEEEEE Dictionaries aren't sorted so the view currently
 	# shows the user data out of order. Tracked in issue #5
 	week_info = {}
@@ -145,11 +131,31 @@ def format_data_week(list_of_points):
 		else:
 			week_info[k] = False
 
-		print week_info
-
-	# keys = week_info.getkeys()
-
 	return week_info
+
+
+def generate_days_index(week_number):
+	"""Function returns a list of dates for the requested week as strings. 
+	Writing to resolve GitHub issue #5. The controller will call this so the view
+	knows the correct order to display the is_stressful booleans."""
+
+	week = Week(2015, week_number)
+
+	days = [
+		week.monday(),
+		week.tuesday(),
+		week.wednesday(),
+		week.thursday(),
+		week.friday()
+	]
+
+	days_index = []	
+
+	for each in days:
+		# stringify the date and add it to the list to return
+		days_index.append(str(each))
+
+	return days_index
 
 
 def format_data_day(day_string):
@@ -170,12 +176,11 @@ def format_data_day(day_string):
 	dict_day_booleans = {}
 
 	for each_point in day_data:
-		# print each_point
+
 		dt = each_point.start_datetime
 		hour_of_point = dt.hour
-		print hour_of_point
+
 		dict_day_booleans[hour_of_point] = each_point.is_stressful
-	print "This is dict_day_booleans:", dict_day_booleans
 
 	# Reference the dict indexed by time and create a timestring/bool dict to return:
 	to_display = {}
@@ -206,11 +211,6 @@ def format_data_day(day_string):
 			pass
 
 	return to_display
-
-
-
-
-
 
 
 

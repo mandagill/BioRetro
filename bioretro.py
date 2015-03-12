@@ -61,10 +61,14 @@ def get_week_number():
 @app.route('/week/<week_num>')
 def show_calendar(week_num):
 
+	# Retrieve data for the most recent full week and format it:
 	list_of_data = data_filter.fetch_weeks_data(int(week_num))
-	# This returns a 5 item dict with bool values on each day 
 	one_weeks_data = data_filter.format_data_week(list_of_data)
-	return render_template('calendar.html', a_weeks_data = one_weeks_data)
+
+	# Go get an ordered list of dates for the given week for sorting the data:
+	sort_keys = data_filter.generate_days_index(int(week_num))
+
+	return render_template('calendar.html', keys=sort_keys, a_weeks_data = one_weeks_data)
 
 
 @app.route('/day/<day>')
