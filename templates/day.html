@@ -17,12 +17,12 @@
 	<p>This will be a day view.</p>
 	<table class="table">
 		{% for each in keys %}
-			{% if days_data[each] == True %}
-				<tr><td class='warning'>{{ each }}</td></tr>
-			{% elif days_data[each] == False %}
-				<tr><td class='success'>{{ each }}</td></tr>
-			{% else %}
+			{% if each not in days_data %}
 				<tr><td class='info'>{{ each }}</td>
+			{% elif days_data[each][0] == True %}
+				<tr><td class='warning'>{{ each }}<div class='bpm'>{{ days_data[each][1]}}</div></td></tr>
+			{% elif days_data[each][0] == False %}
+				<tr><td class='success'>{{ each }}<div class='bpm'>{{ days_data[each][1]}}</div></td></tr>
 			{% endif %}
 		{% endfor %}
 	</table>

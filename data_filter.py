@@ -117,11 +117,12 @@ def format_data_week(list_of_points):
 			week_info[k] = True
 		# If the current point is False but there is already a True
 		# point in the dict, check so as not to override.
-		elif week_info.get(k) is True:
+		elif week_info[k] is True:
 			continue
 		else:
 			week_info[k] = False
 
+	print week_info
 	return week_info
 
 
@@ -160,6 +161,7 @@ def render_data(week_number):
 	# Go get an ordered list of dates for the given week for sorting the data:
 	sort_keys = generate_days_index(int(week_number))
 
+	print "these are the sort keys being returned:", sort_keys
 	return sort_keys, one_weeks_data
 
 
@@ -170,25 +172,21 @@ def format_data_day(day_string):
 	This will take a string parameter formatted like this: '2015-24-02' """
 
 	dbsession = connect()
-	result = dbsession.query(HRDataPoint).filter_by(day_of_point=day_string).all()
-	# Need to unpack the data queried from the DB before checking for stress
-	day_data = []
-
-	for each_record in result:
-		day_data.append(each_record)
+	db_result = dbsession.query(HRDataPoint).filter_by(day_of_point=day_string).all()
 
 	# Need to extract the time from the datetime attribute, 
 	# so make a dict of {<time> : <boolean>} pairs:
 	dict_day_booleans = {}
 
-	for each_point in day_data:
+	for each_point in db_result:
 
 		dt = each_point.start_datetime
 		hour_of_point = dt.hour
 
-		dict_day_booleans[hour_of_point] = each_point.is_stressful
+		# Create a dictionary of the data to display with a *datetime* object as the key
+		dict_day_booleans[hour_of_point] = [each_point.is_stressful, each_point.bpm]
 
-	# Reference the dict indexed by time and create a timestring/bool dict to return:
+	# Reference the dict indexed by time and create the dict to return, which uses a string as key instead:
 	to_display = {}
 	dict_keys = dict_day_booleans.keys()
 
@@ -216,6 +214,8 @@ def format_data_day(day_string):
 		else:
 			pass
 
+
+	print "This is the days data dict: ", to_display
 	return to_display
 
 
