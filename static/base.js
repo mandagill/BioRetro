@@ -2,10 +2,8 @@
 // Makes the browser show you syntax errors
 
 function refreshData() {
-	// $('#get-moar-data').attr("disabled", true)
-	$.ajax(
-		{url: '/fetch_data',}
-	);
+
+	$("#data-refresh-response").load('/fetch_data');
 };
 
 $('#get-moar-data').on('click', refreshData);
@@ -35,7 +33,6 @@ $(function () {
 
 		$(elm).on('click', function () {
 			// the /slash in front of /day is important or else this *appends* to the current location
-			debugger;
 			$(location).attr('href', '/day/' + date_string);
 		})
 	});

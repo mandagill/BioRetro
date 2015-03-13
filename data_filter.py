@@ -30,10 +30,6 @@ def check_for_new_bpm():
 		data_point_store.save_to_db(new_data)
 		return True
 	else:
-		print """No new data in the DB!
-		check back in 24 hours."""
-		# TODO return the string to the ajax caller so the user will
-		# see the message.
 		return False
 
 
@@ -49,7 +45,8 @@ def is_motion_related(timestamp):
 	data_as_list = foa.fetch_data(startbound=starttime, endbound=timestamp, data_type='speed')
 
 	d = json.loads(data_as_list)
-
+	# "point" is the name of the list that the Fit API returns. The JSON object gives us header info in the dict,
+	# and that dict contains a list of data points. If there's nothing in that list, there's no data.
 	if 'point' not in d:
 		return False
 
@@ -89,26 +86,20 @@ def fetch_weeks_data(week_number):
 	dbsession = connect()
 
 	requested_week = Week(2015, week_number)
+
 	# These functions return datetime objects. I <3 the isoweek library zomg.
 	startbound = requested_week.monday()
 	endbound = requested_week.saturday() #This doesn't *include* data from the endbound day, just up to that day.
 
 	one_weeks_data = dbsession.query(HRDataPoint).filter(HRDataPoint.start_datetime>startbound, HRDataPoint.start_datetime<endbound ).all()
 
-	# Need to unpack the data points contained in the query result object because SQLAlchemy is mildly annoying like that.
-	datapoints = []
-
-	for each in one_weeks_data:
-		datapoints.append(each)
-
-	return datapoints
+	return one_weeks_data
 
 
 def format_data_week(list_of_points):
 	"""Takes a list of data point objects as parameter, returns a dictionary formatted
 	like this: week = {'3-2': False, '3-3': False, '3-4': True}"""
-	# FIX ME FIX ME FIX MEEEEE Dictionaries aren't sorted so the view currently
-	# shows the user data out of order. Tracked in issue #5
+
 	week_info = {}
 
 	for each in list_of_points:

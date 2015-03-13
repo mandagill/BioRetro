@@ -2,9 +2,30 @@ import Fit_OAuth as foa
 from requests_oauthlib import OAuth2Session
 from flask import Flask, request, redirect, session, url_for, render_template
 from flask.json import jsonify
+import json
 import os
 import data_filter as data_filter
 from isoweek import Week
+
+
+ORDERED_KEY_LIST_DAY = [
+	'9 am',
+	'10 am',
+	'11 am',
+	'noon',
+	'1 pm',
+	'2 pm',
+	'3 pm',
+	'4 pm',
+	'5 pm',
+	'6 pm'
+	]
+
+DATA_UPDATE_RESPONSES = {
+	'success': "Your data has been updated!",
+	'fail': "No new data recently! check back in 24 hours.",
+	'other': "Something unexpected happened, check with the webmistress."
+}
 
 
 os.environ['DEBUG'] = '1'
@@ -32,15 +53,19 @@ def get_token():
 
 
 @app.route('/fetch_data')
-def data_stub():
+def fetch_data():
 
 	result = data_filter.check_for_new_bpm()
 
-	if result is None:
-		return
-
-	print "Data updated!"
-	return "Your data has been updated!" #TODO edit the .js to show this to the user.
+	if result is False:
+		print "No new data"
+		return DATA_UPDATE_RESPONSES['fail']
+	elif result is True:
+		print "I got your data!"
+		return DATA_UPDATE_RESPONSES['success']
+	else:
+		print "FAILWHALE."
+		return DATA_UPDATE_RESPONSES['other']
 
 
 @app.route('/check_week_number')
@@ -87,25 +112,17 @@ def show_older():
 def show_newer():
 	"""Checks the session dictionary for the week that is currently being viewed and 
 	displays info for the nex week after that."""
-	# TODO implement incrementation of week_viewing after lunch...
-	pass
+	# First we increment the week_number in session:
+	session['week_viewing'] += 1
+
+	requested_week = session['week_viewing']
+	sort_keys, one_weeks_data = data_filter.render_data(requested_week)
+
+	return render_template('calendar.html', keys=sort_keys, a_weeks_data = one_weeks_data)
 
 
 @app.route('/day/<day>')
 def show_day(day):
-
-	ORDERED_KEY_LIST_DAY = [
-		'9 am',
-		'10 am',
-		'11 am',
-		'noon',
-		'1 pm',
-		'2 pm',
-		'3 pm',
-		'4 pm',
-		'5 pm',
-		'6 pm'
-	]
 
 	days_data = data_filter.format_data_day(day)
 	return render_template('day.html', keys=ORDERED_KEY_LIST_DAY, days_data=days_data)
