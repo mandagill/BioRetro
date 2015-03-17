@@ -12,6 +12,9 @@ PLEASE NOTE: This tool is intended for users' own personal introspection and hea
 -[How it works](#How-it-works)         
 -[References](#References)          
 
+![Screengrab of the week calendar view]
+(https://raw.githubusercontent.com/mandagill/BioRetro/master/BioRetro_screengrab.png)
+
 ###Technologies used:
 
 Flask, OAuth2, SQLAlchemy, PostgreSQL, JavaScript/JQuery, Jinja2, Google Fit API, Android Wear
