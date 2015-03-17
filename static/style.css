@@ -79,3 +79,18 @@ body {
 	font-style: italic;
 }
 
+.day-table {
+	border-radius: 20%;
+}
+
+.legend {
+	float: left;
+	margin-left: 100px;
+}
+
+.swatch {
+	height: 20px;
+	width: 20px;
+	border-radius: 20px;
+}
+

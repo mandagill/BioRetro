@@ -1,7 +1,20 @@
 {% extends 'global.html' %}
 {% block content %}
 <div class="content">
-	<p>This will have a color legend.</p>
+	<table class="legend">
+		<tr>
+			<td>Stressful</td><td class="swatch"><td class="swatch"></td><td class="swatch stressful"></td>
+		</tr>
+		<tr>
+			<td>Not stressful</td class="swatch"><td><td class="swatch"></td><td class="swatch not-stressful"></td>
+		</tr>
+		<tr>
+			<td>No data<td><td class="swatch"></td><td class="swatch no-data"></td>
+		</tr>
+	</table>
+	<br>
+	<br>
+	<br>
 	<table class="table week">
 		<tr>
 		{% for each in keys %}

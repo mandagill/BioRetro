@@ -2,14 +2,14 @@
 {% block content %}
 <div class="content">
 	<p>This will be a day view.</p>
-	<table class="table">
+	<table class="day-table table">
 		{% for each in keys %}
 			{% if each not in days_data %}
 				<tr class='no-data'><td>{{ each }}</td><td></td>
 			{% elif days_data[each][0] == True %}
-				<tr class='stressful'><td>{{ each }}</td><td><div class='bpm'>{{ days_data[each][1]}}</div></td></tr>
+				<tr class='stressful'><td>{{ each }}</td><td><div class='bpm'>{{ days_data[each][1]}} bpm</div></td></tr>
 			{% elif days_data[each][0] == False %}
-				<tr class='not-stressful'><td>{{ each }}</td><td><div class='bpm'>{{ days_data[each][1]}}</div></td></tr>
+				<tr class='not-stressful'><td>{{ each }}</td><td><div class='bpm'>{{ days_data[each][1]}} bpm</div></td></tr>
 			{% endif %}
 		{% endfor %}
 	</table>
