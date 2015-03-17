@@ -60,3 +60,22 @@ body {
 .content {
 	padding: 20px;
 }
+
+.copy {
+	text-align: center;
+}
+
+.getting-data {
+	float: left;
+	margin-left: 300px;
+}
+
+#show-bio-retro {
+	float: right;
+	margin-right: 300px;
+}
+
+#data-refresh-response {
+	font-style: italic;
+}
+
