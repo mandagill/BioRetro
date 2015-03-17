@@ -27,11 +27,12 @@ DATA_UPDATE_RESPONSES = {
 	'other': "Something unexpected happened, check with the webmistress."
 }
 
+FLASK_SESSION_KEY = os.environ['FLASK_SESSION_KEY']
 
 os.environ['DEBUG'] = '1'
 
 app = Flask(__name__)
-app.secret_key = "pleasedon'tmockmethisisfordevonlyNOTAREALKEY"
+app.secret_key = FLASK_SESSION_KEY
 
 
 @app.route('/authorize_google')
