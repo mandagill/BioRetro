@@ -10,12 +10,11 @@
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
-<script src="../static/base.js"></script>
-
 <link rel="stylesheet" href="../static/style.css">
+<script src="../static/base.js"></script>
 </head>
 <body>
+<div class="content">
 	<p>This will have a calendar.</p>
 	<table class="table week">
 		<tr>
@@ -26,19 +25,20 @@
 		<tr class='day-clickable'>
 		{% for each in keys %}
 			{% if a_weeks_data[each] == True %}
-				<td class='warning day-in-week'></td>
+				<td class='stressful day-in-week'></td>
 			{% elif a_weeks_data[each] == False %}
-				<td class='success day-in-week'></td>
+				<td class='not-stressful day-in-week'></td>
 			{% else %}
-				<td class='info day-in-week'></td>
+				<td class='no-data day-in-week'></td>
 			{% endif %}
 		{% endfor %}
 		</tr>
 		<br>
 		<div class='navlink'>
-			<a href='/older'>Previous week</a>
-			<a href='/newer'>Next week</a>
+			<a id='previous-link' href='/older'>Previous week</a>
+			<a id='next-link' href='/newer'>Next week</a>
 		</div>
 	</table>
+</div>
 </body>
 </html>

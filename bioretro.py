@@ -52,6 +52,12 @@ def get_token():
 	return render_template('okauth.html')
 
 
+@app.route('/landing')
+def go_to_landing():
+	# Interstitial landing page fixes issue #2
+	return render_template('landing.html')
+
+
 @app.route('/fetch_data')
 def fetch_data():
 
@@ -81,8 +87,6 @@ def get_week_number():
 	# need to decrement so we see the last *full week's* data
 	week_num = week_num_int - 1
 	session['week_viewing'] = week_num
-
-	print "here's the week num in session: ", session['week_viewing']
 
 	return str(week_num)
 

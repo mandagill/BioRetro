@@ -7,6 +7,7 @@
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="../static/style.css">
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
@@ -14,17 +15,19 @@
 <script src="../static/base.js"></script>
 </head>
 <body>
+<div class="content">
 	<p>This will be a day view.</p>
 	<table class="table">
 		{% for each in keys %}
 			{% if each not in days_data %}
-				<tr><td class='info'>{{ each }}</td>
+				<tr class='no-data'><td>{{ each }}</td><td></td>
 			{% elif days_data[each][0] == True %}
-				<tr><td class='warning'>{{ each }}<div class='bpm'>{{ days_data[each][1]}}</div></td></tr>
+				<tr class='stressful'><td>{{ each }}</td><td><div class='bpm'>{{ days_data[each][1]}}</div></td></tr>
 			{% elif days_data[each][0] == False %}
-				<tr><td class='success'>{{ each }}<div class='bpm'>{{ days_data[each][1]}}</div></td></tr>
+				<tr class='not-stressful'><td>{{ each }}</td><td><div class='bpm'>{{ days_data[each][1]}}</div></td></tr>
 			{% endif %}
 		{% endfor %}
 	</table>
+</div>
 </body>
 </html>

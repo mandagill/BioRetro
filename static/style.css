@@ -1,15 +1,62 @@
-
+body {
+	background-color: #FFFCF3;
+	font-family: 'Varela Round', sans-serif;
+}
 
 .day-in-week {
 	height: 200px;
+	width: 200px;
+	border-color: #7e7e7e;
+	border-width: 5px;
+	border-radius: 20%;
+	margin: 20px !important;
+}
+
+#previous-link {
+	text-align: left;
+}
+
+#next-link {
+	float: right;
+}
+
+.day-clickable {	
 	
 }
 
-.navlink {
+.no-data {
+	background-color: #D3D3D3;
+}
 
+.stressful {
+	background-color: #E070E3;
+}
+
+.not-stressful {
+	background-color: #ABE575;
+}
+
+.navlink {
+	color: #0E570A;
 }
 
 .week{
-	padding: 
+	text-align: center;
 }
 
+.navbar-brand {
+	font-size: 3em;
+}
+
+.navbar {
+	font-family: 'Varela Round', sans-serif;
+	background-color: #ABE575;
+}
+
+.active {
+	background-color: #ABE575;
+}
+
+.content {
+	padding: 20px;
+}

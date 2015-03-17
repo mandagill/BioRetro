@@ -24,9 +24,16 @@ def check_for_new_bpm():
 	latest_timestamp = int(latest_datapoint.end_time)
 	now_in_nanotime = nanotime.now()
 
+	# If the timestamp on the most recent datapoint is more than a day old, call Google for updated data
 	if latest_timestamp < (int(nanotime.now()) - DAY_IN_NANOSECS):
 		endbound = str(int(nanotime.now())) # Get now in nanotime for the endbound of the dataset
 		new_data = foa.fetch_data(data_type='bpm', startbound=latest_datapoint.end_time, endbound=endbound)
+
+		try:
+			data_dict = json.loads(new_data)
+		except:
+			print "This is what new_data looks like: ", new_data
+
 		data_point_store.save_to_db(new_data)
 		return True
 	else:
@@ -121,8 +128,7 @@ def format_data_week(list_of_points):
 			continue
 		else:
 			week_info[k] = False
-
-	print week_info
+ 
 	return week_info
 
 
@@ -161,7 +167,6 @@ def render_data(week_number):
 	# Go get an ordered list of dates for the given week for sorting the data:
 	sort_keys = generate_days_index(int(week_number))
 
-	print "these are the sort keys being returned:", sort_keys
 	return sort_keys, one_weeks_data
 
 
@@ -214,8 +219,6 @@ def format_data_day(day_string):
 		else:
 			pass
 
-
-	print "This is the days data dict: ", to_display
 	return to_display
 
 
