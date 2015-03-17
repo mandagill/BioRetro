@@ -1,7 +1,22 @@
 {% extends 'global.html' %}
 {% block content %}
 <div class="content">
-	<p>This will be a day view.</p>
+	<table class="legend">
+		<tr>
+			<td>Stressful</td><td class="swatch"><td class="swatch"></td><td class="swatch stressful"></td>
+		</tr>
+		<tr>
+			<td>Not stressful</td class="swatch"><td><td class="swatch"></td><td class="swatch not-stressful"></td>
+		</tr>
+		<tr>
+			<td>No data<td><td class="swatch"></td><td class="swatch no-data"></td>
+		</tr>
+	</table>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
 	<table class="day-table table">
 		{% for each in keys %}
 			{% if each not in days_data %}

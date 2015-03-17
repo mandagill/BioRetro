@@ -14,10 +14,12 @@ body {
 
 #previous-link {
 	text-align: left;
+	font-size: 18px;
 }
 
 #next-link {
 	float: right;
+	font-size: 18px;
 }
 
 .day-clickable {	
@@ -86,6 +88,7 @@ body {
 .legend {
 	float: left;
 	margin-left: 100px;
+	font-size: 18px;
 }
 
 .swatch {
@@ -94,3 +97,6 @@ body {
 	border-radius: 20px;
 }
 
+.btn {
+	background-color: #e7e7e7;
+}
