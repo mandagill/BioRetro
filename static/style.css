@@ -22,10 +22,6 @@ body {
 	font-size: 18px;
 }
 
-.day-clickable {	
-	
-}
-
 .no-data {
 	background-color: #D3D3D3;
 }
@@ -44,6 +40,12 @@ body {
 
 .week{
 	text-align: center;
+	border-spacing: 15px;
+	border-collapse: separate;
+}
+
+#week-header td {
+	border: 0;	
 }
 
 .navbar-brand {
@@ -81,10 +83,6 @@ body {
 	font-style: italic;
 }
 
-.day-table {
-	border-radius: 20%;
-}
-
 .legend {
 	float: left;
 	margin-left: 100px;
@@ -99,4 +97,33 @@ body {
 
 .btn {
 	background-color: #e7e7e7;
+}
+
+.day-table tr>td {
+	padding-left: 2em !important;
+}
+
+.day-table tr:first-child td:first-child
+{
+    border-top-left-radius: 25px;    
+}
+
+.day-table tr:first-child td:last-child
+{
+    border-top-right-radius: 25px;    
+}
+
+.day-table tr:last-child td:first-child
+{
+    border-bottom-left-radius: 25px;    
+}
+
+.day-table tr:last-child td:last-child
+{
+    border-bottom-right-radius: 25px;   
+
+}
+
+.day-table tr:first-child td{
+	border-top: 0;
 }

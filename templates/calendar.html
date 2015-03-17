@@ -1,21 +1,6 @@
 {% extends 'global.html' %}
 {% block content %}
 <div class="content">
-	<table class="legend">
-		<tr>
-			<td>Stressful</td><td class="swatch"><td class="swatch"></td><td class="swatch stressful"></td>
-		</tr>
-		<tr>
-			<td>Not stressful</td class="swatch"><td><td class="swatch"></td><td class="swatch not-stressful"></td>
-		</tr>
-		<tr>
-			<td>No data<td><td class="swatch"></td><td class="swatch no-data"></td>
-		</tr>
-	</table>
-	<br>
-	<br>
-	<br>
-	<br>
 	<table class="table week">
 		<tr id="week-header">
 		{% for each in keys %}
@@ -38,6 +23,18 @@
 			<a id='previous-link' href='/older'>Previous week</a>
 			<a id='next-link' href='/newer'>Next week</a>
 		</div>
+	</table>
+	<br>
+	<table class="legend">
+		<tr>
+			<td>Stressful</td><td class="swatch"><td class="swatch"></td><td class="swatch stressful"></td>
+		</tr>
+		<tr>
+			<td>Not stressful</td class="swatch"><td><td class="swatch"></td><td class="swatch not-stressful"></td>
+		</tr>
+		<tr>
+			<td>No data<td><td class="swatch"></td><td class="swatch no-data"></td>
+		</tr>
 	</table>
 </div>
 {% endblock %}
