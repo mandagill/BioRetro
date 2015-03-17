@@ -8,13 +8,13 @@ In order to use this app, users must have access to hardware which can sense hea
 PLEASE NOTE: This tool is intended for users' own personal introspection and heath maintenence. It IS NOT intended to be used during a sprint retrospective meeting unless everyone on the team is comfortable sharing personal biofeedback metrics, which not everyone may want to do. 
 
 ###Contents
--[Technologies](#Technologies-used)
--[How it works](#How-it-works)
--[References](#References)
+-[Technologies](#Technologies-used)        
+-[How it works](#How-it-works)         
+-[References](#References)          
 
 ###Technologies used:
 
-Flask, OAuth2, SQLAlchemy, PostgreSQL, JQuery, Google Fit API, Android Wear
+Flask, OAuth2, SQLAlchemy, PostgreSQL, JavaScript/JQuery, Jinja2, Google Fit API, Android Wear
 
 ###How it works:
 
