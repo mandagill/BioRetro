@@ -1,21 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>BioRetro</title>
-
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-	<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="../static/style.css">
-<script src="../static/base.js"></script>
-</head>
-<body>
+{% extends 'global.html' %}
+{% block content %}
 <div class="content">
-	<p>This will have a calendar.</p>
+	<p>This will have a color legend.</p>
 	<table class="table week">
 		<tr>
 		{% for each in keys %}
@@ -40,5 +26,4 @@
 		</div>
 	</table>
 </div>
-</body>
-</html>
+{% endblock %}

@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>:D</title>
-	<link rel="stylesheet" href="../static/style.css">
-</head>
-<body>
+{% extends 'global.html' %}
+{% block content %}
+	<div class="content">
 	<p>You are OAUTHORIZED</p>
 	<br>
 	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script src="/static/base.js"></script>
 	<form action="/landing">
-		<input type="submit">
+		<input type="submit" value="Go to the app!">
 	</form>
-</body>
-</html>
-
-
-<a href="" target="_blank">
+</div>
+{% endblock %}

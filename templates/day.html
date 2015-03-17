@@ -1,20 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>BioRetro</title>
-
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-	<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="../static/style.css">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
-<script src="../static/base.js"></script>
-</head>
-<body>
+{% extends 'global.html' %}
+{% block content %}
 <div class="content">
 	<p>This will be a day view.</p>
 	<table class="table">
@@ -29,5 +14,4 @@
 		{% endfor %}
 	</table>
 </div>
-</body>
-</html>
+{% endblock %}
