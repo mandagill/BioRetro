@@ -27,12 +27,18 @@ def check_for_new_bpm():
 	# If the timestamp on the most recent datapoint is more than a day old, call Google for updated data
 	if latest_timestamp < (int(nanotime.now()) - DAY_IN_NANOSECS):
 		endbound = str(int(nanotime.now())) # Get now in nanotime for the endbound of the dataset
+		# convert latest_timestamp to int so I can increment it up a second
+		int_latest_timestamp = int(latest_timestamp)
+		int_latest_timestamp += 1000000000
+		latest_timestamp = str(int_latest_timestamp)
+
 		new_data = foa.fetch_data(data_type='bpm', startbound=latest_datapoint.end_time, endbound=endbound)
 
 		try:
 			data_dict = json.loads(new_data)
 		except:
 			print "This is what new_data looks like: ", new_data
+			return "There was an unexpected error."
 
 		data_point_store.save_to_db(new_data)
 		return True

@@ -10,6 +10,7 @@ Base = declarative_base()
 # Base.query = session.query_property()
 
 def make_tables():
+	ENGINE = create_engine('postgresql://localhost:5432/BioRetro', echo=False)
 	Base.metadata.create_all(ENGINE)
 
 
@@ -63,4 +64,4 @@ def main():
 if __name__ == '__main__': 
 	main()
 
-
+# make_tables()

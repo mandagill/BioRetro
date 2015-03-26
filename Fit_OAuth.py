@@ -89,6 +89,7 @@ def fetch_data(startbound, endbound, data_type):
 	elif api_response.status_code == 403:
 		return "This app hasn't been authorized to access your location or body sensor data." 
 	else:
+		print "API call returned ", api_response.status_code
 		return "There was a problem getting your data from Google. Please check your debug logs."
 	# import pdb; pdb.set_trace()
 

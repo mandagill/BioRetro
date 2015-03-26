@@ -24,7 +24,7 @@ ORDERED_KEY_LIST_DAY = [
 DATA_UPDATE_RESPONSES = {
 	'success': "Your data has been updated!",
 	'fail': "No new data recently! check back in 24 hours.",
-	'other': "Something unexpected happened, check with the webmistress."
+	'other': "Something unexpected happened, please check with the webmistress."
 }
 
 FLASK_SESSION_KEY = os.environ['FLASK_SESSION_KEY']

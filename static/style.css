@@ -127,3 +127,7 @@ body {
 .day-table tr:first-child td{
 	border-top: 0;
 }
+
+.error-msg {
+	max-width: 200px;
+}
