@@ -6,8 +6,7 @@ import os
 
 ENGINE = None
 Session = None
-DATABASE_URL = os.environ.get(DATABASE_URL)
-
+DATABASE_URL = os.environ['DATABASE_URL']
 
 Base = declarative_base()
 # Base.query = session.query_property()
