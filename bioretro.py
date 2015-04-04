@@ -139,9 +139,9 @@ PORT=int(os.environ.get("PORT", 8100))
 # TODO Update the SSL context with the correct credentials for Heroku
 if __name__ == '__main__': 
 	app.run( 
-		port=PORT, 
-		ssl_context=('/Users/amandagilmore/GoogleFit/server.crt', 
-			'/Users/amandagilmore/GoogleFit/server.key'))
+		port=PORT))
+
+		# ssl_context=('/Users/amandagilmore/GoogleFit/server.crt', '/Users/amandagilmore/GoogleFit/server.key'
 
 
 
