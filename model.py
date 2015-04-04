@@ -2,14 +2,19 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
+import os
 
 ENGINE = None
 Session = None
+DATABASE_URL = os.environ.get(DATABASE_URL)
+
 
 Base = declarative_base()
 # Base.query = session.query_property()
 
 def make_tables():
+	""" This function intended for use when seeding the DB after making a schema change;
+	it's hardcoded to the local DB for this reason."""
 	ENGINE = create_engine('postgresql://localhost:5432/BioRetro', echo=False)
 	Base.metadata.create_all(ENGINE)
 
@@ -50,7 +55,7 @@ def connect():
 	global ENGINE
 	global Session
 	
-	ENGINE = create_engine('postgresql://localhost:5432/BioRetro', echo=False)
+	ENGINE = create_engine(DATABASE_URL, echo=False)
 	Session = sessionmaker(bind=ENGINE, autocommit=False, autoflush=False)
 
 	return Session()
