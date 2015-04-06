@@ -140,6 +140,7 @@ PORT=int(os.environ.get("PORT", 8100))
 if __name__ == '__main__': 
 	app.run( 
 		port=PORT,
+		host='0.0.0.0',
 		ssl_context='adhoc')
 
 		# ssl_context=('/Users/amandagilmore/GoogleFit/server.crt', '/Users/amandagilmore/GoogleFit/server.key'
