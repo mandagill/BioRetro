@@ -135,15 +135,13 @@ def show_day(day):
 
 
 
-PORT=int(os.environ.get("PORT", 8100))
-# TODO Update the SSL context with the correct credentials for Heroku
+PORT = int(os.environ.get("PORT", 5000))
+
 if __name__ == '__main__': 
 	app.run( 
+		debug=True,
 		port=PORT,
-		host='0.0.0.0',
-		ssl_context='adhoc')
+		host='127.0.0.1',
+		ssl_context=('/Users/amandagilmore/GoogleFit/server.crt', '/Users/amandagilmore/GoogleFit/server.key'))
 
-		# ssl_context=('/Users/amandagilmore/GoogleFit/server.crt', '/Users/amandagilmore/GoogleFit/server.key'
-
-
-
+		# ssl_context=('/Users/amandagilmore/GoogleFit/server.crt', '/Users/amandagilmore/GoogleFit/server.key')
