@@ -5,7 +5,7 @@ from requests_oauthlib import OAuth2Session
 from flask import Flask, request, redirect, session, url_for, render_template
 from flask.json import jsonify
 import os
-
+import sys
 
 FIT_CLIENT_ID = os.environ['FIT_CLIENT_ID']
 FIT_CLIENT_SECRET = os.environ['FIT_CLIENT_SECRET']
@@ -56,6 +56,9 @@ def callback(authcode):
 
 	session['oauth_token'] = token
 
+	# Write some code to time the life of the call
+	# sys.stdout.write(stuff)
+
 	return render_template('okauth.html')
 
 
@@ -82,10 +85,12 @@ def fetch_data(startbound, endbound, data_type):
 
 	print "From google: ----------", api_response
 	if api_response.status_code == 200:
+		sys.stdout.write("event#API_call=200")
 		return api_response.content
 		# TODO function returns a string; would like to optimize
 		# this by making it return a dict to avoid repetition 
 	elif api_response.status_code == 403:
+		sys.stdout.write("event#API_call=403")
 		return "This app hasn't been authorized to access your location or body sensor data." 
 	else:
 		print "API call returned ", api_response.status_code
