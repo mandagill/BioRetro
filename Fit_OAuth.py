@@ -85,7 +85,7 @@ def fetch_data(startbound, endbound, data_type):
 
 	print "From google: ----------", api_response
 	if api_response.status_code == 200:
-		sys.stdout.write("event#API_call=200")
+		sys.stdout.write("event#exception='test'")
 		return api_response.content
 		# TODO function returns a string; would like to optimize
 		# this by making it return a dict to avoid repetition 
