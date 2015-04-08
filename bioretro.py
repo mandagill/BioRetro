@@ -65,13 +65,10 @@ def fetch_data():
 	result = data_filter.check_for_new_bpm()
 
 	if result is False:
-		print "No new data"
 		return DATA_UPDATE_RESPONSES['fail']
 	elif result is True:
-		print "I got your data!"
 		return DATA_UPDATE_RESPONSES['success']
 	else:
-		print "FAILWHALE."
 		return DATA_UPDATE_RESPONSES['other']
 
 
