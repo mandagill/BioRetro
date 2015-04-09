@@ -54,7 +54,7 @@ def save_to_db(data_as_string):
 		# is_stressful function can use the committed datapoints
 		# when it calls the db. Not as performant but it
 		# makes the calculations more accurate.
-		dbsession.commit()
+	dbsession.commit()
 
 
 def convert_to_datetime(nanotime_as_string):
