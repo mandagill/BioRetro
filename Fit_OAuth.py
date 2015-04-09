@@ -85,17 +85,16 @@ def fetch_data(startbound, endbound, data_type):
 	api_response = google.get(api_call)
 
 	if api_response.status_code == 200:
-		# sys.stdout.write("event#exception='test'")
-		print "API response code was 200"
+		sys.stdout.write("event#api_response=200")
 		return api_response.content
 		# TODO function returns a string; would like to optimize
 		# this by making it return a dict to avoid repetition 
 	elif api_response.status_code == 403:
-		sys.stdout.write("event#API_call=403")
-		print "API response code was 403"
+		sys.stdout.write("event#api_response=403")
 		return "This app hasn't been authorized to access your location or body sensor data." 
 	else:
-		print "API call returned ", api_response.status_code
+		response_code = api_response.status_code
+		sys.stdout.write("event#api_response=" + str(response_code))
 		return "There was a problem getting your data from Google. Please check your debug logs."
 	# import pdb; pdb.set_trace()
 
