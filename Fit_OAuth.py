@@ -9,10 +9,7 @@ import sys
 
 FIT_CLIENT_ID = os.environ['FIT_CLIENT_ID']
 FIT_CLIENT_SECRET = os.environ['FIT_CLIENT_SECRET']
-# On local
-REDIRECT_URI = 'https://localhost:5000/callback'
-# On Heroku
-# REDIRECT_URI = 'https://amanda-starter-project.herokuapp.com/callback'
+REDIRECT_URI = os.environ['REDIRECT_URI']
 
 # These are the OAuth enpoints in the Google Fit API documentation: 
 # https://developers.google.com/accounts/docs/OAuth2WebServer
