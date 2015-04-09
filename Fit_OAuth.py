@@ -9,8 +9,10 @@ import sys
 
 FIT_CLIENT_ID = os.environ['FIT_CLIENT_ID']
 FIT_CLIENT_SECRET = os.environ['FIT_CLIENT_SECRET']
-# Hardcoding to localhost until I can sort out deployment
-REDIRECT_URI = 'https://amanda-starter-project.herokuapp.com/callback'
+# On local
+REDIRECT_URI = 'https://localhost:5000/callback'
+# On Heroku
+# REDIRECT_URI = 'https://amanda-starter-project.herokuapp.com/callback'
 
 # These are the OAuth enpoints in the Google Fit API documentation: 
 # https://developers.google.com/accounts/docs/OAuth2WebServer
@@ -70,6 +72,8 @@ def fetch_data(startbound, endbound, data_type):
 	pass string 'speed' for speed data.
 	pass string 'bpm' for bpm data. """
 	
+	print "fetch_data() has been called."
+
 	# Create an OAuth2 session with the token stored in the Flask session:
 	google = OAuth2Session(FIT_CLIENT_ID, token=session['oauth_token'])
 	
@@ -84,12 +88,14 @@ def fetch_data(startbound, endbound, data_type):
 	api_response = google.get(api_call)
 
 	if api_response.status_code == 200:
-		sys.stdout.write("event#exception='test'")
+		# sys.stdout.write("event#exception='test'")
+		print "API response code was 200"
 		return api_response.content
 		# TODO function returns a string; would like to optimize
 		# this by making it return a dict to avoid repetition 
 	elif api_response.status_code == 403:
 		sys.stdout.write("event#API_call=403")
+		print "API response code was 403"
 		return "This app hasn't been authorized to access your location or body sensor data." 
 	else:
 		print "API call returned ", api_response.status_code
