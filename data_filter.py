@@ -36,6 +36,7 @@ def check_for_new_bpm():
 
 		try:
 			data_dict = json.loads(new_data)
+			print data_dict
 		except:
 			print "This is what new_data looks like: ", new_data
 			return "There was an unexpected error."
