@@ -68,8 +68,6 @@ def fetch_data(startbound, endbound, data_type):
 
 	pass string 'speed' for speed data.
 	pass string 'bpm' for bpm data. """
-	
-	print "fetch_data() has been called."
 
 	# Create an OAuth2 session with the token stored in the Flask session:
 	google = OAuth2Session(FIT_CLIENT_ID, token=session['oauth_token'])
@@ -89,8 +87,8 @@ def fetch_data(startbound, endbound, data_type):
 		return api_response.content
 		# TODO function returns a string; would like to optimize
 		# this by making it return a dict to avoid repetition 
-	elif api_response.status_code == 403:
-		sys.stdout.write("count#api_returns_403=1")
+	elif api_response.status_code >= 400 or api_response.status_code < 500:
+		sys.stdout.write("count#api_returns_4xx=1")
 		return "This app hasn't been authorized to access your location or body sensor data." 
 	elif api_response.status_code == 500:
 		sys.stdout.write("count#api_returns_500=1")
