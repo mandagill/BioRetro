@@ -83,7 +83,7 @@ def fetch_data(startbound, endbound, data_type):
 	api_response = google.get(api_call)
 
 	if api_response.status_code == 200:
-		sys.stdout.write("count#api_returns_200=1")
+		sys.stdout.write("count#api_returns_200=5")
 		return api_response.content
 		# TODO function returns a string; would like to optimize
 		# this by making it return a dict to avoid repetition 
