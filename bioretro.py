@@ -29,8 +29,6 @@ DATA_UPDATE_RESPONSES = {
 
 FLASK_SESSION_KEY = os.environ['FLASK_SESSION_KEY']
 
-os.environ['DEBUG'] = '1'
-
 app = Flask(__name__)
 app.secret_key = FLASK_SESSION_KEY
 
@@ -40,6 +38,7 @@ def authorize_api():
 	"""OAuth step 1: redirect the user to Google so that they can see and approve the API permissions."""
 	
 	auth_url = foa.go_to_google()
+	print "this is the value of auth_url: ", auth_url
 	return redirect(auth_url)
 
 
@@ -131,7 +130,7 @@ def show_day(day):
 
 
 
-
+DEBUG = "DEBUG" in os.environ
 PORT = int(os.environ.get("PORT", 5000))
 
 if __name__ == '__main__': 
