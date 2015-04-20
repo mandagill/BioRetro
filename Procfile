@@ -1,1 +1,1 @@
-web: newrelic-admin run-program python bioretro.py run_gunicorn -b "0.0.0.0:$PORT" -w 3
+web: gunicorn -b "0.0.0.0:$PORT" bioretro:app
