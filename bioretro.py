@@ -6,6 +6,7 @@ import json
 import os
 import data_filter as data_filter
 from isoweek import Week
+import newrelic.agent
 
 
 ORDERED_KEY_LIST_DAY = [
