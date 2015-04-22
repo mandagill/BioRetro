@@ -135,6 +135,8 @@ DEBUG = "DEBUG" in os.environ
 PORT = int(os.environ.get("PORT", 5000))
 
 if __name__ == '__main__': 
+	newrelic.agent.initialize('newrelic.ini', 'local')
+	app = newrelic.agent.wsgi_application()(app)
 	app.run( 
 		debug=True,
 		port=PORT,
