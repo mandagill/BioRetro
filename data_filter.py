@@ -54,6 +54,8 @@ def is_motion_related(timestamp):
 
 	 It returns true or false."""
 
+	print "this is timestamp:", timestamp
+
 	starttime = str(int(timestamp) - FIFTEEN_MINS_NANO)
 	data_as_list = foa.fetch_data(startbound=starttime, endbound=timestamp, data_type='speed')
 
@@ -61,32 +63,43 @@ def is_motion_related(timestamp):
 	# "point" is the name of the list that the Fit API returns. The JSON object gives us header info in the dict,
 	# and that dict contains a list of data points. If there's nothing in that list, there's no data.
 	if 'point' not in d:
+		print "not motion related"
 		return False
 
+	print "Yes motion related"
 	return True
 
 
-def is_stressful(data_point_time, bpm):
-	"""This takes a datetime object as its parameter and determines if 
+def is_stressful(data_point_obj):
+	"""
+	data_point_time, bpm
+
+	This takes a datetime object as its parameter and determines if 
 	data associated with it indicates stress by comparing to filtered datapoints from the preceeding week.
 	The caller should expect a Boolean to be returned."""
 
 	# Determine the startbound for the query:
-	d = timedelta(days=-7)
-	sb = data_point_time + d
+	data_point_time = data_point_obj.start_datetime
+	delta = timedelta(days=-7)
+
+	# sb = data_point_obj.start_time
+	sb = data_point_time + delta
+	bpm_list = []
 
 	dbsession = connect()
 
 	dataset = dbsession.query(HRDataPoint).filter(and_(HRDataPoint.start_datetime > sb, HRDataPoint.start_datetime < data_point_time)).all()
 
-	bpm_list = []
+	# coallate the BPM points into a list and get its mean
 	for each in dataset:
 		bpm_list.append(each.bpm)
 
 	mean_of_dataset = numpy.mean(bpm_list)
 
-	if bpm > (mean_of_dataset + 9):
-		return True
+	if data_point_obj.bpm > (mean_of_dataset + 9):
+		# Make sure no motion was logged before taking the data point:
+		if is_motion_related(data_point_obj.start_time) is False:
+			return True
 
 	return False
 
@@ -174,7 +187,6 @@ def render_data(week_number):
 	sort_keys = generate_days_index(int(week_number))
 
 	return sort_keys, one_weeks_data
-
 
 
 def format_data_day(day_string):

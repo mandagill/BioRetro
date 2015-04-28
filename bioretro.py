@@ -24,7 +24,7 @@ ORDERED_KEY_LIST_DAY = [
 
 DATA_UPDATE_RESPONSES = {
 	'success': "Your data has been updated!",
-	'fail': "No new data recently! check back in 24 hours.",
+	'fail': "No new data recently! Try checking back in 24 hours.",
 	'other': "Something unexpected happened, please check with the webmistress."
 }
 
@@ -142,4 +142,7 @@ if __name__ == '__main__':
 		port=PORT,
 		host='127.0.0.1')
 
-		# ssl_context=('/Users/amandagilmore/GoogleFit/server.crt', '/Users/amandagilmore/GoogleFit/server.key')
+
+		# ssl_context=('/Users/amandagilmore/GoogleFit/server.crt', '/Users/amandagilmore/GoogleFit/server.key'))
+
+	

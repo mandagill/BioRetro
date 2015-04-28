@@ -40,13 +40,13 @@ def save_to_db(data_as_string):
 		datapoint.day_of_point = sdt.strftime('%Y-%m-%d')
 		
 		# Check if the datapoint is stressful when compared to existing DB data
-		datapoint.is_stressful = data_filter.is_stressful(datapoint.start_datetime, datapoint.bpm)
+		datapoint.is_stressful = data_filter.is_stressful(datapoint)
 		
 		# Make sure elevated bpm isn't motion related before writing it to the DB
-		if datapoint.is_stressful:
-			if data_filter.is_motion_related(datapoint.start_time):
-				print "the datapoint is stressful, using continue."
-				continue
+		# if datapoint.is_stressful:
+		# 	if data_filter.is_motion_related(datapoint.start_time):
+		# 		print "the datapoint is stressful, using continue."
+		# 		continue
 
 		# Add the datapoint to the db session
 		dbsession.add(datapoint)
@@ -54,7 +54,7 @@ def save_to_db(data_as_string):
 		# is_stressful function can use the committed datapoints
 		# when it calls the db. Not as performant but it
 		# makes the calculations more accurate.
-	dbsession.commit()
+		dbsession.commit()
 
 
 def convert_to_datetime(nanotime_as_string):
