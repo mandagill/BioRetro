@@ -1,3 +1,5 @@
+[warning] This is a project I made before Python3 caught on, and I'd need to refactor a lot to make this secure to use. Therefore I recommend *you do not do so.* I'll likely take a stab at rewriting this in mid 1019 using Python 3 and FitBit's API. (RIP my poor old Google Watch)
+
 BioRetro
 ===========
 
